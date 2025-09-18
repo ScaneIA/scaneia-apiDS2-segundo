@@ -1,0 +1,46 @@
+### Listar todos os usuários
+#GET http://localhost:8080/usuarios
+#Accept: application/json
+
+###
+
+### Buscar usuário por ID
+#GET http://localhost:8080/usuarios/1
+#Accept: application/json
+
+###
+
+### Criar usuário
+POST http://localhost:8082/usuarios
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nome": "Maria Silva",
+  "cpf": "12345678901",
+  "senha": "minhasenha",
+  "email": "maria.silva@example.com",
+  "idUsuarioTipo": 1,
+  "idEstrutura": 1
+}
+
+###
+
+### Atualizar usuário
+#PUT http://localhost:8080/usuarios/1
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "nome": "Maria Oliveira",
+#  "cpf": "12345678901",
+#  "senha": "novaSenha123",
+#  "email": "maria.oliveira@example.com",
+#  "idUsuarioTipo": 2,
+#  "idEstrutura": 1
+#}
+
+###
+
+### Deletar usuário
+#DELETE http://localhost:8080/usuarios/1

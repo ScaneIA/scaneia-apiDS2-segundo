@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioOpenAPI {
 
     private final UsuarioService service;
 
@@ -16,31 +16,29 @@ public class UsuarioController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<UsuarioResponseDTO> listarTodos() {
-        return service.listarTodos();
+    @Override
+    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+        return ResponseEntity.ok(service.listarTodos());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @Override
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<UsuarioResponseDTO> criar(@Valid @RequestBody UsuarioRequestDTO dto) {
-        return ResponseEntity.ok(service.salvar(dto));
+        return ResponseEntity.status(201).body(service.salvar(dto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> atualizar(@PathVariable Long id,
+    @Override
+    public ResponseEntity<UsuarioResponseDTO> atualizar(Long id,
                                                         @Valid @RequestBody UsuarioRequestDTO dto) {
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<Void> deletar(Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }

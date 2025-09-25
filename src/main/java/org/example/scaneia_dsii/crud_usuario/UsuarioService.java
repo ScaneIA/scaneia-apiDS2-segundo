@@ -1,29 +1,39 @@
 package org.example.scaneia_dsii.crud_usuario;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+    private final ObjectMapper objectMapper;
 
-    public UsuarioService(UsuarioRepository repository) {
+    public UsuarioService(UsuarioRepository repository, ObjectMapper objectMapper) {
         this.repository = repository;
+        this.objectMapper = objectMapper;
     }
 
     public List<UsuarioResponseDTO> listarTodos() {
-        return repository.findAll()
-                .stream()
-                .map(this::toResponseDTO)
-                .collect(Collectors.toList());
+        List<Usuario> usuarios = repository.findAll();
+
+        if (usuarios.isEmpty()) {
+            throw new RuntimeException("Não foi possível encontrar nenhum usuário");
+        }
+
+        return objectMapper.convertValue(usuarios, new TypeReference<List<UsuarioResponseDTO>>() {});
     }
 
-    public Optional<UsuarioResponseDTO> buscarPorId(Long id) {
-        return repository.findById(id).map(this::toResponseDTO);
+    public UsuarioResponseDTO buscarPorId(Long id) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario com ID " + id + " não encontrado."));
+
+        return objectMapper.convertValue(usuario, UsuarioResponseDTO.class);
     }
 
     public UsuarioResponseDTO salvar(UsuarioRequestDTO dto) {
@@ -38,15 +48,29 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
-        return repository.findById(id).map(usuario -> {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario com ID " + id + " não encontrado."));
+
+        if (dto.getNome() != null) {
             usuario.setNome(dto.getNome());
+        }
+        if (dto.getCpf() != null) {
             usuario.setCpf(dto.getCpf());
+        }
+        if (dto.getSenha() != null) {
             usuario.setSenha(dto.getSenha());
+        }
+        if (dto.getEmail() != null) {
             usuario.setEmail(dto.getEmail());
+        }
+        if (dto.getIdUsuarioTipo() != null) {
             usuario.setIdUsuarioTipo(dto.getIdUsuarioTipo());
+        }
+        if (dto.getIdEstrutura() != null) {
             usuario.setIdEstrutura(dto.getIdEstrutura());
-            return toResponseDTO(repository.save(usuario));
-        }).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        }
+
+        return toResponseDTO(repository.save(usuario));
     }
 
     public void deletar(Long id) {

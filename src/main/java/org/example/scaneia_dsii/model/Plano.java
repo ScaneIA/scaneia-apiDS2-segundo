@@ -24,7 +24,6 @@ public class Plano {
     @Column(name = "data_criacao")
     Date dataCriacao;
 
-    @NotNull
     @Column(name = "data_alteracao")
     Date dataAlteracao;
 

@@ -1,4 +1,4 @@
-package org.example.scaneia_dsii.crud_usuario;
+package org.example.scaneia_dsii.crud_usuario.DTO;
 
 import jakarta.validation.constraints.*;
 

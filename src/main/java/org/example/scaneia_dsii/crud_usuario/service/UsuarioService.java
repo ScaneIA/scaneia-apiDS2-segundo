@@ -1,12 +1,15 @@
-package org.example.scaneia_dsii.crud_usuario;
+package org.example.scaneia_dsii.crud_usuario.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.example.scaneia_dsii.crud_usuario.repository.UsuarioRepository;
+import org.example.scaneia_dsii.crud_usuario.DTO.UsuarioRequestDTO;
+import org.example.scaneia_dsii.crud_usuario.DTO.UsuarioResponseDTO;
+import org.example.scaneia_dsii.crud_usuario.model.Usuario;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {

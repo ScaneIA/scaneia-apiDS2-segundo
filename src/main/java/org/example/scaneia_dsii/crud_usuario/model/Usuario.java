@@ -1,4 +1,4 @@
-package org.example.scaneia_dsii.crud_usuario;
+package org.example.scaneia_dsii.crud_usuario.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

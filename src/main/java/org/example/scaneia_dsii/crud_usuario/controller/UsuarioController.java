@@ -1,6 +1,10 @@
-package org.example.scaneia_dsii.crud_usuario;
+package org.example.scaneia_dsii.crud_usuario.controller;
 
 import jakarta.validation.Valid;
+import org.example.scaneia_dsii.crud_usuario.UsuarioOpenAPI;
+import org.example.scaneia_dsii.crud_usuario.DTO.UsuarioRequestDTO;
+import org.example.scaneia_dsii.crud_usuario.DTO.UsuarioResponseDTO;
+import org.example.scaneia_dsii.crud_usuario.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

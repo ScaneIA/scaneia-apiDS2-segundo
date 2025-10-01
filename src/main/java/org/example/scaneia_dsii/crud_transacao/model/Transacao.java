@@ -1,8 +1,7 @@
-package org.example.scaneia_dsii.model;
+package org.example.scaneia_dsii.crud_transacao.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package org.example.scaneia_dsii.model;
+package org.example.scaneia_dsii.crud_estrutura.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +16,6 @@ public class Estrutura {
 
     @Column(name = "estrutura_id")
     private Integer estruturaId;
-
 
     @NotNull
     @Column(name = "estrutura_tipo_id")

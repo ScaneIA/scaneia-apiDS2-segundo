@@ -1,4 +1,4 @@
-package org.example.scaneia_dsii.model;
+package org.example.scaneia_dsii.crud_usuarioTipo.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

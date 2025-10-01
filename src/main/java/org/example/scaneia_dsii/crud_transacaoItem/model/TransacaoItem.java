@@ -1,4 +1,4 @@
-package org.example.scaneia_dsii.model;
+package org.example.scaneia_dsii.crud_transacaoItem.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

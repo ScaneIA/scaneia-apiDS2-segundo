@@ -1,6 +1,7 @@
-package org.example.scaneia_dsii.crud_usuario;
+package org.example.scaneia_dsii.dtos;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class UsuarioResponseDTO {
 
@@ -10,10 +11,10 @@ public class UsuarioResponseDTO {
     private String email;
     private Long idUsuarioTipo;
     private Long idEstrutura;
-    private LocalDateTime dataCriacao;
+    private Date dataCriacao;
 
     public UsuarioResponseDTO(Long id, String nome, String cpf, String email,
-                              Long idUsuarioTipo, Long idEstrutura, LocalDateTime dataCriacao) {
+                              Long idUsuarioTipo, Long idEstrutura, Date dataCriacao) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -30,6 +31,6 @@ public class UsuarioResponseDTO {
     public String getEmail() { return email; }
     public Long getIdUsuarioTipo() { return idUsuarioTipo; }
     public Long getIdEstrutura() { return idEstrutura; }
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
+    public Date getDataCriacao() { return dataCriacao; }
 }
 

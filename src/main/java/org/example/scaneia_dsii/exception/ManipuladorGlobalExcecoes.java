@@ -44,7 +44,7 @@ public class ManipuladorGlobalExcecoes {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> manipuladorIllegalArgumentException(IllegalArgumentException iae){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("O corpo da sua validação não está validado!!");
+                .body("O corpo da sua validação não está validado!");
     }
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<Map<String, String>> manipuladorInvalidDataException(InvalidDataException ide){

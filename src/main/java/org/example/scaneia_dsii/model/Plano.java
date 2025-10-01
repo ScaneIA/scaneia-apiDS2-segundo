@@ -3,31 +3,32 @@ package org.example.scaneia_dsii.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 public class Plano {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @NotNull
-    @Size(max = 255)
+    @Column(nullable = false, length = 255)
     String descricao;
 
-    @NotNull
-    @Column(name = "qtd_planilhas")
+    @Column(name = "qtd_planilhas", nullable = false)
     Integer qtdPlanilhas;
 
-    @NotNull
-    @Column(name = "data_criacao")
+    @Column(name = "data_criacao", nullable = false)
     Date dataCriacao;
 
-    @Column(name = "data_alteracao")
+    @Column(name = "data_alteracao", nullable = false)
     Date dataAlteracao;
 
-    @NotNull
+    @Column(nullable = false)
     Boolean ativo;
 
     public Plano(String descricao, Integer qtdPlanilhas, Date dataCriacao, Date dataAlteracao, Boolean ativo) {
@@ -39,55 +40,5 @@ public class Plano {
     }
 
     public Plano(){
-
-    }
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Integer getQtdPlanilhas() {
-        return qtdPlanilhas;
-    }
-
-    public void setQtdPlanilhas(Integer qtdPlanilhas) {
-        this.qtdPlanilhas = qtdPlanilhas;
-    }
-
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public Date getDataAlteracao() {
-        return dataAlteracao;
-    }
-
-    public void setDataAlteracao(Date dataAlteracao) {
-        this.dataAlteracao = dataAlteracao;
-    }
-
-    public Boolean getAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
     }
 }

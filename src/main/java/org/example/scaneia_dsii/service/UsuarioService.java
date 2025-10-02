@@ -1,0 +1,95 @@
+package org.example.scaneia_dsii.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.example.scaneia_dsii.model.Usuario;
+import org.example.scaneia_dsii.repository.UsuarioRepository;
+import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
+import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final ObjectMapper objectMapper;
+    public UsuarioService(UsuarioRepository usuarioRepository, ObjectMapper objectMapper) {
+        this.usuarioRepository = usuarioRepository;
+        this.objectMapper = objectMapper;
+    }
+    public UsuarioResponseDTO inserirUsuario (UsuarioRequestDTO request) {
+        if (usuarioRepository.existsByCpf(request.getCpf())) {
+            throw new RuntimeException("CPF já cadastrado"); //Excessao personalizada
+        }
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email já cadastrado"); //Excessao personalizada
+        }
+        Usuario novoUsuario = objectMapper.convertValue(request, Usuario.class);
+        novoUsuario.setDataCriacao(new Date());
+        usuarioRepository.save(novoUsuario);
+        return objectMapper.convertValue(novoUsuario, UsuarioResponseDTO.class);
+    }
+
+    public List<UsuarioResponseDTO> listarUsuarios(){
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<UsuarioResponseDTO> response = new ArrayList<>();
+        for (Usuario usuario : usuarios) {
+            response.add(objectMapper.convertValue(usuario, UsuarioResponseDTO.class));
+        }
+        if (response.isEmpty()){
+            throw new EntityNotFoundException("Nenhum usuário cadastrado no momento");
+        }
+        return response;
+    }
+
+    public UsuarioResponseDTO listarUsuarioPorId(Long id){
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com o ID" + id + "não encontrado"));
+        return objectMapper.convertValue(usuario, UsuarioResponseDTO.class);
+    }
+
+    @Transactional
+    public UsuarioResponseDTO atualizarUsuarioParcial(Long id, UsuarioRequestDTO request){
+        //Temos que ver certinho as excessões que podem dar, cpf... email e tudo mais
+        if (!usuarioRepository.existsById(id)){
+            throw new EntityNotFoundException("Usuário com o ID " + id + " não encontrado");
+        }
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
+        Usuario usuario = usuarioEncontrado.get();
+        if (request.getNome() != null) {
+            usuario.setNome(request.getNome());
+        }
+        if (request.getCpf() != null) {
+            usuario.setCpf(request.getCpf());
+        }
+        if (request.getSenha() != null) {
+            usuario.setSenha(request.getSenha());
+        }
+        if (request.getEmail() != null) {
+            usuario.setEmail(request.getEmail());
+        }
+        if (request.getIdUsuarioTipo() != null) {
+            usuario.setIdUsuarioTipo(request.getIdUsuarioTipo());
+        }
+        if (request.getIdEstrutura() != null) {
+            usuario.setIdEstrutura(request.getIdEstrutura());
+        }
+        usuarioRepository.save(usuario);
+        return objectMapper.convertValue(usuario, UsuarioResponseDTO.class);
+    }
+    @Transactional
+    public void deletarUsuario(Long id){
+        if (!usuarioRepository.existsById(id)){
+            throw new EmptyResultDataAccessException(1);
+        }
+        usuarioRepository.deleteById(id);
+    }
+}
+

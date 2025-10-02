@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:src/main/java/org/example/scaneia_dsii/crud_usuario/DTO/UsuarioRequestDTO.java
 package org.example.scaneia_dsii.crud_usuario.DTO;
+========
+package org.example.scaneia_dsii.dtos;
+>>>>>>>> origin:src/main/java/org/example/scaneia_dsii/dtos/UsuarioRequestDTO.java
 
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.mail.MailException;
 
 public class UsuarioRequestDTO {
 

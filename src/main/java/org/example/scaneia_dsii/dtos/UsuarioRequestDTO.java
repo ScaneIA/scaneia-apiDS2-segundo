@@ -1,8 +1,6 @@
 package org.example.scaneia_dsii.dtos;
 
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.mail.MailException;
 
 public class UsuarioRequestDTO {
 

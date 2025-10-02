@@ -1,6 +1,5 @@
 package org.example.scaneia_dsii.dtos;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class UsuarioResponseDTO {

@@ -5,11 +5,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.scaneia_dsii.validation.OnCreate;
 import org.example.scaneia_dsii.validation.OnPatch;
 
-@Data
+@Getter
+@Setter
 public class PlanoRequestDTO {
     @NotBlank
     @NotNull(message = "O campo descrição é obrigatório", groups = {OnCreate.class, OnPatch.class})
@@ -18,7 +20,6 @@ public class PlanoRequestDTO {
 
     @NotNull(message = "O campo quantidade de planilhas é obrigatório", groups = {OnCreate.class, OnPatch.class})
     @Min(value = 0, message = "A quantidade mínima de planilhas é 0")
-    @Column(name = "qtd_planilhas")
     Integer qtdPlanilhas;
 
     @NotNull(message = "O campo ativo é obrigatório", groups = {OnCreate.class, OnPatch.class})

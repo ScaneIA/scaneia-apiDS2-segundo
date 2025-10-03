@@ -13,15 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/plano")
-public class PlanoControler implements PlanoOpenAPI {
+public class PlanoController implements PlanoOpenAPI {
     private final PlanoService planoService;
 
-    public PlanoControler(PlanoService planoService) {
+    public PlanoController(PlanoService planoService) {
         this.planoService = planoService;
     }
 
@@ -38,7 +37,7 @@ public class PlanoControler implements PlanoOpenAPI {
     }
 
     @Override
-    public ResponseEntity<PlanoResponseDTO> listarPlanosPorId(
+    public ResponseEntity<PlanoResponseDTO> listarPlanoPorId(
             @Parameter(description = "ID do produto a ser buscado")
             @PathVariable Integer id){
         PlanoResponseDTO plano = planoService.listarPlanoPorId(id);
@@ -50,8 +49,9 @@ public class PlanoControler implements PlanoOpenAPI {
         PlanoResponseDTO plano = planoService.atualizarPlanoParcial(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(plano);
     }
+
     @Override
-    public ResponseEntity<String> deletarProduto(@PathVariable Integer id){
+    public ResponseEntity<String> deletarPlano(@PathVariable Integer id){
         planoService.deletarPlano(id);
         return ResponseEntity.ok("Plano excluído com sucesso!");
     }

@@ -28,7 +28,7 @@ public interface PlanoOpenAPI {
             @ApiResponse(responseCode = "404", description = "Plano não encontrado")
     })
     @GetMapping("/selecionar/{id}")
-    ResponseEntity<PlanoResponseDTO> listarPlanosPorId(@PathVariable Integer id);
+    ResponseEntity<PlanoResponseDTO> listarPlanoPorId(@PathVariable Integer id);
 
     @Operation(summary = "Adicionar novo plano")
     @ApiResponses(value = {
@@ -53,6 +53,6 @@ public interface PlanoOpenAPI {
             @ApiResponse(responseCode = "404", description = "Plano não encontrado")
     })
     @DeleteMapping("/excluir/{id}")
-    ResponseEntity<String> deletarProduto(@PathVariable Integer id);
+    ResponseEntity<String> deletarPlano(@PathVariable Integer id);
 
 }

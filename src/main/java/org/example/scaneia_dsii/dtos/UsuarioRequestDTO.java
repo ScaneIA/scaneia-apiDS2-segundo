@@ -1,7 +1,11 @@
 package org.example.scaneia_dsii.dtos;
 
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class UsuarioRequestDTO {
 
     @NotBlank(message = "Nome é obrigatório")
@@ -24,23 +28,4 @@ public class UsuarioRequestDTO {
 
     @NotNull(message = "id_estrutura é obrigatório")
     private Long idEstrutura;
-
-    // Getters e Setters
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-
-    public String getCpf() { return cpf; }
-    public void setCpf(String cpf) { this.cpf = cpf; }
-
-    public String getSenha() { return senha; }
-    public void setSenha(String senha) { this.senha = senha; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public Long getIdUsuarioTipo() { return idUsuarioTipo; }
-    public void setIdUsuarioTipo(Long idUsuarioTipo) { this.idUsuarioTipo = idUsuarioTipo; }
-
-    public Long getIdEstrutura() { return idEstrutura; }
-    public void setIdEstrutura(Long idEstrutura) { this.idEstrutura = idEstrutura; }
 }

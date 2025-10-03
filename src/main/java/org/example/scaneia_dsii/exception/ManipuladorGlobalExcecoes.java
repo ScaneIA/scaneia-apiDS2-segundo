@@ -25,14 +25,29 @@ public class ManipuladorGlobalExcecoes {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> manipuladorEntityNotFoundException(EntityNotFoundException enfe){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Plano não encontrado");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(enfe.getMessage());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> manipuladorDatsIntegrityViolationException(DataIntegrityViolationException dive){
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("Erro de DataIntegrityViolationException");
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String mensagem;
+
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+            org.hibernate.exception.ConstraintViolationException constraintEx =
+                    (org.hibernate.exception.ConstraintViolationException) ex.getCause();
+            String constraintName = constraintEx.getConstraintName();
+
+            if (constraintName != null && constraintName.contains("fk_")) {
+                mensagem = "Erro de integridade: referência inválida em uma chave estrangeira (" + constraintName + ")";
+            } else if (constraintName != null && constraintName.contains("uk_")) {
+                mensagem = "Erro de integridade: valor duplicado em campo único (" + constraintName + ")";
+            } else {
+                mensagem = "Erro de integridade no banco de dados: " + constraintName;
+            }
+        } else {
+            mensagem = "Violação de integridade no banco de dados: " + ex.getMostSpecificCause().getMessage();
+        }
+        return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -53,13 +68,14 @@ public class ManipuladorGlobalExcecoes {
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<String> manipuladorEmptyResultDataAccessException(EmptyResultDataAccessException erde){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("O plano não foi encontrado para ser deletado");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erde.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> manipuladorHttpMessageNotReadableException(HttpMessageNotReadableException hmnre){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("JSON mal formatado!");
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>>
     manipulaMethodArgumentNotValid(MethodArgumentNotValidException ex){

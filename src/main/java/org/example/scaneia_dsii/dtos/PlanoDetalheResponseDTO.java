@@ -6,17 +6,14 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class PlanoResponseDTO {
+public class PlanoDetalheResponseDTO {
+    Long id;
 
-    Integer id;
+    Double preco;
 
-    String descricao;
+    Integer qtdMeses;
 
-    Integer qtdPlanilhas;
+    Integer planoId;
 
     Date dataCriacao;
-
-    Date dataAlteracao;
-
-    Boolean ativo;
 }

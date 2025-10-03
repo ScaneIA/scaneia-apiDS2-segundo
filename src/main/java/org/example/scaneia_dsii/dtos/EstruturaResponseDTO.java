@@ -1,38 +1,19 @@
-package org.example.scaneia_dsii.model;
+package org.example.scaneia_dsii.dtos;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
-@Entity
-public class Estrutura {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class EstruturaResponseDTO {
+
     private Integer id;
-
-    @NotNull
     private String descricao;
-
-    @Column(name = "estrutura_id")
     private Integer estruturaId;
-
-    @NotNull
-    @Column(name = "estrutura_tipo_id")
     private Integer estruturaTipoId;
-
-    @NotNull
-    @Column(name = "data_criacao")
     private Date dataCriacao;
-
-    @NotNull
-    @Column(name = "data_alteracao")
     private Date dataAlteracao;
-
-    @NotNull
     private Boolean ativo;
 
-    public Estrutura(String descricao, Integer estruturaId, Integer estruturaTipoId, Date dataCriacao, Date dataAlteracao, Boolean ativo) {
+    public EstruturaResponseDTO(String descricao, Integer estruturaId, Integer estruturaTipoId, Date dataCriacao, Date dataAlteracao, Boolean ativo) {
         this.descricao = descricao;
         this.estruturaId = estruturaId;
         this.estruturaTipoId = estruturaTipoId;
@@ -41,9 +22,10 @@ public class Estrutura {
         this.ativo = ativo;
     }
 
-    public Estrutura(){
+    public EstruturaResponseDTO(){
 
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -99,4 +81,5 @@ public class Estrutura {
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
     }
-}
+
+    }

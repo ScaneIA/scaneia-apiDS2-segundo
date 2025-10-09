@@ -19,7 +19,7 @@ public class PlanoRequestDTO {
     String descricao;
 
     @NotNull(message = "O campo quantidade de planilhas é obrigatório", groups = {OnCreate.class, OnPatch.class})
-    @Min(value = 0, message = "A quantidade mínima de planilhas é 0")
+    @Size(min = 0, message = "A quantidade mínima de planilhas é 0")
     Integer qtdPlanilhas;
 
     @NotNull(message = "O campo ativo é obrigatório", groups = {OnCreate.class, OnPatch.class})

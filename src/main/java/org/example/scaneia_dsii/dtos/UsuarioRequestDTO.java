@@ -12,7 +12,7 @@ public class UsuarioRequestDTO {
     private String nome;
 
     @NotBlank(message = "CPF é obrigatório")
-    @Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres")
+    @Size(min = 11, max = 11, message = "CPF   ter 11 caracteres")
     private String cpf;
 
     @NotBlank(message = "Senha é obrigatória")

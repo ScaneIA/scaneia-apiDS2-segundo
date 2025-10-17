@@ -1,10 +1,9 @@
 package org.example.scaneia_dsii.repository;
 
-public interface TransacaoItemRepository {
+import org.example.scaneia_dsii.model.TransacaoItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    boolean ExistsById(Long id);
-    boolean findAll();
-    boolean findById(Long id);
-    boolean findByIdTransacao(Long id);
-    boolean findByIdPlanoEspecificado(Long id);
+@Repository
+public interface TransacaoItemRepository extends JpaRepository<TransacaoItem, Long> {
 }

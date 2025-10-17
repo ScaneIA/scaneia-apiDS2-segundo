@@ -1,6 +1,5 @@
 package org.example.scaneia_dsii.dtos;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,9 +11,9 @@ import lombok.Setter;
 public class UsuarioTipoRequestDTO {
 
     @NotBlank(message = "A descrição é obrigatória")
-    @Size(max = 6, message = "Senha deve ter pelo menos 6 caracteres")
-    String descricao;
+    @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
+    private String descricao;
 
     @NotNull(message = "O status é obrigatório")
-    Boolean ativo;
+    private Boolean ativo;
 }

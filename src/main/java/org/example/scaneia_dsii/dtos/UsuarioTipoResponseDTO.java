@@ -1,14 +1,12 @@
 package org.example.scaneia_dsii.dtos;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 public class UsuarioTipoResponseDTO {
-
-    private Integer id;
+    private Long id;
     private String descricao;
     private Boolean ativo;
 }

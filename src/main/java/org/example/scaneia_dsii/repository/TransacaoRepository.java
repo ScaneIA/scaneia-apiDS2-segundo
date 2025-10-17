@@ -1,14 +1,10 @@
 package org.example.scaneia_dsii.repository;
 
-import java.util.Date;
+import org.example.scaneia_dsii.model.Transacao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TransacaoRepository {
-
-    boolean ExistsById(Long id);
-    boolean findAll();
-    boolean findById(Long id);
-    boolean findByDataCriacao(Date dataCriacao);
-    boolean findByDataAlteracao(Date dataAlteracao);
-
+@Repository
+public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
 }

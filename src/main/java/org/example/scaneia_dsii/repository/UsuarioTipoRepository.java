@@ -1,11 +1,13 @@
 package org.example.scaneia_dsii.repository;
 
-public interface UsuarioTipoRepository {
+import org.example.scaneia_dsii.model.UsuarioTipo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    boolean ExistsById(Long id);
-    boolean findAll();
-    boolean findById(Long id);
-    boolean findByAtivo(Boolean ativo);
+import java.util.List;
 
+@Repository
+public interface UsuarioTipoRepository extends JpaRepository<UsuarioTipo, Long> {
 
+    List<UsuarioTipo> findByAtivo(Boolean ativo);
 }

@@ -1,41 +1,49 @@
-### Listar todos os usuários
+#### Listar usuários
 #GET http://localhost:8082/usuarios
 #Accept: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvLnNpbHZhQGpicy5jb20uYnIiLCJpYXQiOjE3NjA2OTcwMjUsImV4cCI6MTc2MDY5NzkyNX0.iNIwtFqirqAEKaiQJ1FbnNyzNgLn-ZAWynekMkU1lrU
 
-###
-
-### Buscar usuário por ID
-GET http://localhost:8082/usuarios/16
-Accept: application/json
-
-###
-
-### Criar usuário
-#POST http://localhost:8082/usuarios
+##### Buscar usuário por ID
+##GET http://localhost:8082/usuarios/16
+##Accept: application/json
+#
+####
+#
+#### Criar usuário
+##POST http://localhost:8082/usuarios
+##Content-Type: application/json
+##Accept: application/json
+##
+##{
+##  "nome": "Maria Silva",
+##  "cpf": "12345678901",
+##  "senha": "minhasenha",
+##  "email": "maria.silva@example.com",
+##  "idUsuarioTipo": 1,
+##  "idEstrutura": 1
+##}
+#
+####
+#
+#### Atualizar usuário
+##PUT http://localhost:8082/usuarios/16
+##Content-Type: application/json
+##Accept: application/json
+##
+##{
+##  "nome": "Maria Oliveira Silva"
+##}
+#
+####
+#
+#### Deletar usuário
+##DELETE http://localhost:8082/usuarios/16
+##
+### Login
+#POST http://localhost:8082/auth/login
 #Content-Type: application/json
-#Accept: application/json
 #
 #{
-#  "nome": "Maria Silva",
-#  "cpf": "12345678901",
-#  "senha": "minhasenha",
-#  "email": "maria.silva@example.com",
-#  "idUsuarioTipo": 1,
-#  "idEstrutura": 1
+#  "username": "joao.silva@jbs.com.br",
+#  "password": "AF0479B889F3519F2E94BEDF6585CA9A03E6963BAC703F201C0A34B86F4479C7"
 #}
-
-###
-
-### Atualizar usuário
-#PUT http://localhost:8082/usuarios/16
-#Content-Type: application/json
-#Accept: application/json
-#
-#{
-#  "nome": "Maria Oliveira Silva"
-#}
-
-###
-
-### Deletar usuário
-#DELETE http://localhost:8082/usuarios/16

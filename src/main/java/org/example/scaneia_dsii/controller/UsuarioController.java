@@ -40,8 +40,8 @@ public class UsuarioController implements UsuarioOpenAPI {
     }
 
     @Override
-    public ResponseEntity<String> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
         usuarioService.deletarUsuario(id);
-        return ResponseEntity.ok("Usuário excluído com sucesso!");
+        return ResponseEntity.noContent().build();
     }
 }

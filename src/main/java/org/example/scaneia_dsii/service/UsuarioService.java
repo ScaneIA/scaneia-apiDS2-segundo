@@ -3,12 +3,15 @@ package org.example.scaneia_dsii.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import org.example.scaneia_dsii.model.Usuario;
 import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +23,9 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final ObjectMapper objectMapper;
+    @Getter
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public UsuarioService(UsuarioRepository usuarioRepository, ObjectMapper objectMapper) {
         this.usuarioRepository = usuarioRepository;
         this.objectMapper = objectMapper;
@@ -91,5 +97,15 @@ public class UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
+
+    public void validarCredenciais(String email, String password) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (!passwordEncoder.matches(password, passwordEncoder.encode(usuario.getSenha()))) {
+            throw new RuntimeException("Senha inválida");
+        }
+    }
+
 }
 

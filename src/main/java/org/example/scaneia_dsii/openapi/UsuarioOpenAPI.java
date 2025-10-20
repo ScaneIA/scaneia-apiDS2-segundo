@@ -51,5 +51,5 @@ public interface UsuarioOpenAPI {
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deletar(@PathVariable Long id);
+    ResponseEntity<String> deletar(@PathVariable Long id);
 }

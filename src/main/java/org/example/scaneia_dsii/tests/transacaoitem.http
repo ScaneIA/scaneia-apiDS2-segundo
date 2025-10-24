@@ -1,0 +1,38 @@
+### Listar todos os itens de transação
+#GET http://localhost:8082/transacao-item/selecionar
+#Accept: application/json
+
+###
+
+### Buscar item de transação por ID
+GET http://localhost:8082/transacao-item/selecionar/1
+Accept: application/json
+
+###
+
+### Criar item de transação
+#POST http://localhost:8082/transacao-item/inserir
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "qtdPlano": 2,
+#  "idTransacao": 1,
+#  "idPlanoEspecificao": 3
+#}
+
+###
+
+### Atualizar item de transação
+#PUT http://localhost:8082/transacao-item/atualizar/1
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "qtdPlano": 3
+#}
+
+###
+
+### Deletar item de transação
+#DELETE http://localhost:8082/transacao-item/excluir/1

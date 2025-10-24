@@ -1,0 +1,38 @@
+### Listar todos os tipos de usuário
+#GET http://localhost:8082/usuario-tipo/selecionar
+#Accept: application/json
+
+###
+
+### Buscar tipo de usuário por ID
+GET http://localhost:8082/usuario-tipo/selecionar/1
+Accept: application/json
+
+###
+
+### Criar tipo de usuário
+#POST http://localhost:8082/usuario-tipo/inserir
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "descricao": "Administrador",
+#  "ativo": true
+#}
+
+###
+
+### Atualizar tipo de usuário
+#PUT http://localhost:8082/usuario-tipo/atualizar/1
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "descricao": "Administrador",
+#  "ativo": true
+#}
+
+###
+
+### Deletar tipo de usuário
+#DELETE http://localhost:8082/usuario-tipo/excluir/1

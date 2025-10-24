@@ -1,0 +1,42 @@
+### Listar todas as estruturas
+#GET http://localhost:8082/estrutura/selecionar
+#Accept: application/json
+
+###
+
+### Buscar estrutura por ID
+GET http://localhost:8082/estrutura/selecionar/1
+Accept: application/json
+
+###
+
+### Criar estrutura
+#POST http://localhost:8082/estrutura/inserir
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "descricao": "Estrutura Central",
+#  "estruturaId": 1,
+#  "estruturaTipoId": 2,
+#  "dataCriacao": "2025-10-17",
+#  "dataAlteracao": "2025-10-17",
+#  "ativo": true
+#}
+
+###
+
+### Atualizar estrutura
+#PUT http://localhost:8082/estrutura/atualizar/1
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "descricao": "Estrutura Principal",
+#  "ativo": false
+#}
+
+###
+
+### Deletar estrutura
+#DELETE http://localhost:8082/estrutura/excluir/1

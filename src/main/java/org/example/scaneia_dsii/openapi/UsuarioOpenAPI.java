@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RequestMapping("/usuarios")
@@ -51,5 +51,13 @@ public interface UsuarioOpenAPI {
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<String> deletar(@PathVariable Long id);
+    ResponseEntity<Void> deletar(@PathVariable Long id);
+
+    @Operation(summary = "Filtrar informações do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Informações obtidas com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @GetMapping("/filtro")
+    ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader);
 }

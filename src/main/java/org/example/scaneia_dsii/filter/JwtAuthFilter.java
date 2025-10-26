@@ -11,8 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Jwts;
-
-
 import java.io.IOException;
 import java.util.Collections;
 
@@ -26,6 +24,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
         this.jwtProperties = jwtProperties;
     }
+
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request,
+//                                    HttpServletResponse response,
+//                                    FilterChain filterChain) throws ServletException, IOException {
+//
+//        String token = null;
+//        String authHeader = request.getHeader("Authorization");
+//
+//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//            token = authHeader.substring(7);
+//        } else if (request.getParameter("token") != null) {
+//            token = request.getParameter("token");
+//        }
+//
+//        if (token != null && jwtService.validarAccessToken(token)) {
+//            String username = Jwts.parser()
+//                    .setSigningKey(jwtProperties.getAccessSecret())
+//                    .parseClaimsJws(token)
+//                    .getBody()
+//                    .getSubject();
+//
+//            UsernamePasswordAuthenticationToken auth =
+//                    new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+//            SecurityContextHolder.getContext().setAuthentication(auth);
+//        }
+//
+//        filterChain.doFilter(request, response);
+//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -42,19 +69,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (token != null && jwtService.validarAccessToken(token)) {
-            String username = Jwts.parser()
+            var claims = Jwts.parser()
                     .setSigningKey(jwtProperties.getAccessSecret())
                     .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+                    .getBody();
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+            String subject = claims.getSubject(); // "username|ROLE"
+            String[] partes = subject.split("\\|");
+
+            String username = partes[0];
+            String role = partes.length > 1 ? partes[1] : "USER"; // fallback caso falte a role
+
+            System.out.println("filterr");
+            System.out.println(username);
+            System.out.println(role);
+            var authority = new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role);
+            var auth = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
+
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
         filterChain.doFilter(request, response);
     }
+
 
 }
 

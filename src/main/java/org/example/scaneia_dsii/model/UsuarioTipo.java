@@ -1,8 +1,6 @@
 package org.example.scaneia_dsii.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +11,7 @@ import lombok.Setter;
 public class UsuarioTipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Column(name = "descricao")
     String descricao;
@@ -21,4 +19,12 @@ public class UsuarioTipo {
     @Column(name = "ativo")
     Boolean ativo;
 
+    public UsuarioTipo(String descricao, Boolean ativo) {
+        this.descricao = descricao;
+        this.ativo = ativo;
+    }
+
+    public UsuarioTipo(){
+
+    }
 }

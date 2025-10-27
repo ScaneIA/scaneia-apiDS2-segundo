@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.groups.Default;
 import org.example.scaneia_dsii.dtos.TransacaoItemRequestDTO;
 import org.example.scaneia_dsii.dtos.TransacaoItemResponseDTO;
+import org.example.scaneia_dsii.openapi.TransacaoItemOpenAPI;
 import org.example.scaneia_dsii.service.TransacaoItemService;
 import org.example.scaneia_dsii.validation.OnCreate;
 import org.example.scaneia_dsii.validation.OnPatch;
@@ -11,12 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transacao-item")
-public class TransacaoItemController {
+public class TransacaoItemController implements TransacaoItemOpenAPI {
 
     private final TransacaoItemService transacaoItemService;
 
@@ -24,20 +23,20 @@ public class TransacaoItemController {
         this.transacaoItemService = transacaoItemService;
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<TransacaoItemResponseDTO> inserirTransacaoItem(
             @RequestBody @Validated({OnCreate.class, Default.class}) TransacaoItemRequestDTO request) {
         TransacaoItemResponseDTO item = transacaoItemService.inserirTransacaoItem(request);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping
+    @Override
     public ResponseEntity<List<TransacaoItemResponseDTO>> listarTransacoesItens() {
         List<TransacaoItemResponseDTO> lista = transacaoItemService.listarTransacoesItens();
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/{id}")
+    @Override
     public ResponseEntity<TransacaoItemResponseDTO> listarTransacaoItemPorId(
             @Parameter(description = "ID do item da transação a ser buscado")
             @PathVariable Long id) {
@@ -45,7 +44,7 @@ public class TransacaoItemController {
         return ResponseEntity.ok(item);
     }
 
-    @PatchMapping("/{id}")
+    @Override
     public ResponseEntity<TransacaoItemResponseDTO> atualizarTransacaoItemParcial(
             @PathVariable Long id,
             @RequestBody @Validated({OnPatch.class, Default.class}) TransacaoItemRequestDTO request) {
@@ -53,7 +52,7 @@ public class TransacaoItemController {
         return ResponseEntity.status(HttpStatus.OK).body(item);
     }
 
-    @DeleteMapping("/{id}")
+    @Override
     public ResponseEntity<String> deletarTransacaoItem(@PathVariable Long id) {
         transacaoItemService.deletarTransacaoItem(id);
         return ResponseEntity.ok("Item da transação excluído com sucesso!");

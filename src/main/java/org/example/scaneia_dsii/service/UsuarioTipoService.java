@@ -9,10 +9,8 @@ import org.example.scaneia_dsii.model.UsuarioTipo;
 import org.example.scaneia_dsii.repository.UsuarioTipoRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class UsuarioTipoService {
 

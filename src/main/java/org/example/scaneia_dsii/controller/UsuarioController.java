@@ -1,6 +1,7 @@
 package org.example.scaneia_dsii.controller;
 
 import jakarta.validation.Valid;
+import org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO;
 import org.example.scaneia_dsii.openapi.UsuarioOpenAPI;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
@@ -40,9 +41,14 @@ public class UsuarioController implements UsuarioOpenAPI {
     }
 
     @Override
-    public ResponseEntity<String> deletar(Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
         usuarioService.deletarUsuario(id);
-        return ResponseEntity.ok("Usuário deletado com sucesso!");
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader) {
+        return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(authHeader));
     }
 
 }

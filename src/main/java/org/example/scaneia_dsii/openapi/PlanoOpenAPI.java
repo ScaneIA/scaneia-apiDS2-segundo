@@ -12,14 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-@RequestMapping("/api/plano")
+@RequestMapping("/plano")
 public interface PlanoOpenAPI {
 
     @Operation(summary = "Listar todos os planos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Planos listados com sucesso")
     })
-    @GetMapping("/selecionar")
+    @GetMapping()
     ResponseEntity<List<PlanoResponseDTO>> listarPlanos();
 
     @Operation(summary = "Buscar plano por ID")
@@ -27,14 +27,14 @@ public interface PlanoOpenAPI {
             @ApiResponse(responseCode = "200", description = "Plano encontrado"),
             @ApiResponse(responseCode = "404", description = "Plano não encontrado")
     })
-    @GetMapping("/selecionar/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<PlanoResponseDTO> listarPlanoPorId(@PathVariable Integer id);
 
     @Operation(summary = "Adicionar novo plano")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Plano adicionado com sucesso")
     })
-    @PostMapping("/inserir")
+    @PostMapping()
     ResponseEntity<PlanoResponseDTO> inserirPlano(@Valid @RequestBody PlanoRequestDTO dto);
 
     @Operation(summary = "Atualizar plano existente")
@@ -43,7 +43,7 @@ public interface PlanoOpenAPI {
             @ApiResponse(responseCode = "404", description = "Plano não encontrado")
     })
 
-    @PutMapping("/atualizar/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<PlanoResponseDTO> atualizarPlanoParcial(@PathVariable Integer id,
                                                  @RequestBody @Validated({OnPatch.class, Default.class}) PlanoRequestDTO request);
 
@@ -52,7 +52,7 @@ public interface PlanoOpenAPI {
             @ApiResponse(responseCode = "200", description = "Plano deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Plano não encontrado")
     })
-    @DeleteMapping("/excluir/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<String> deletarPlano(@PathVariable Integer id);
 
 }

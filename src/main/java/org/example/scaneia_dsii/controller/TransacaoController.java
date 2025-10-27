@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.groups.Default;
 import org.example.scaneia_dsii.dtos.TransacaoRequestDTO;
 import org.example.scaneia_dsii.dtos.TransacaoResponseDTO;
+import org.example.scaneia_dsii.openapi.TransacaoOpenAPI;
 import org.example.scaneia_dsii.service.TransacaoService;
 import org.example.scaneia_dsii.validation.OnCreate;
 import org.example.scaneia_dsii.validation.OnPatch;
@@ -11,12 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 @RestController
-@RequestMapping("/api/transacao")
-public class TransacaoController {
+public class TransacaoController implements TransacaoOpenAPI {
 
     private final TransacaoService transacaoService;
 
@@ -24,20 +22,20 @@ public class TransacaoController {
         this.transacaoService = transacaoService;
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<TransacaoResponseDTO> inserirTransacao(
             @RequestBody @Validated({OnCreate.class, Default.class}) TransacaoRequestDTO request) {
         TransacaoResponseDTO transacao = transacaoService.inserirTransacao(request);
         return ResponseEntity.ok(transacao);
     }
 
-    @GetMapping
+    @Override
     public ResponseEntity<List<TransacaoResponseDTO>> listarTransacoes() {
         List<TransacaoResponseDTO> lista = transacaoService.listarTransacoes();
         return ResponseEntity.ok(lista);
     }
 
-    @GetMapping("/{id}")
+    @Override
     public ResponseEntity<TransacaoResponseDTO> listarTransacaoPorId(
             @Parameter(description = "ID da transação a ser buscada")
             @PathVariable Long id) {
@@ -45,7 +43,7 @@ public class TransacaoController {
         return ResponseEntity.ok(transacao);
     }
 
-    @PatchMapping("/{id}")
+    @Override
     public ResponseEntity<TransacaoResponseDTO> atualizarTransacaoParcial(
             @PathVariable Long id,
             @RequestBody @Validated({OnPatch.class, Default.class}) TransacaoRequestDTO request) {
@@ -53,7 +51,7 @@ public class TransacaoController {
         return ResponseEntity.status(HttpStatus.OK).body(transacao);
     }
 
-    @DeleteMapping("/{id}")
+    @Override
     public ResponseEntity<String> deletarTransacao(@PathVariable Long id) {
         transacaoService.deletarTransacao(id);
         return ResponseEntity.ok("Transação excluída com sucesso!");

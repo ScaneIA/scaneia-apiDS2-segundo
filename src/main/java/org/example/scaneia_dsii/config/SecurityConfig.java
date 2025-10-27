@@ -28,35 +28,27 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/ping").permitAll()
 
-                .requestMatchers("/usuarios/**").permitAll() //ok
-                .requestMatchers("/estrutura/**").permitAll() //ok
-                .requestMatchers("/planoDetalhe/**").permitAll()
-                .requestMatchers("/plano/**").permitAll() //ok
-                .requestMatchers("/transacaoItem/**").permitAll()
-                .requestMatchers("/transacao/**").permitAll()
-                .requestMatchers("/usuarioTipo/**").permitAll()
+                //Temporário
+                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
 
-//                //Temporário
-//                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-//
-//                //Qualquer usuário pode fazer com autenticação
-//                .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyAuthority("OPERARIO", "ADMIN", "DIRETOR", "RH")
-//
-//                //Somente visualização dos usuários e estruturas para administradores e diretores
-//                .requestMatchers(HttpMethod.GET, "/usuarios**").hasAnyAuthority("ADMIN", "DIRETOR")
-//                //.requestMatchers(HttpMethod.GET, "/usuarioTipo**").hasAnyAuthority("ADMIN", "DIRETOR")
-//                .requestMatchers(HttpMethod.GET, "/estruturaTipo**").hasAnyAuthority("ADMIN", "DIRETOR")
-//                .requestMatchers(HttpMethod.GET, "/estrutura**").hasAnyAuthority("ADMIN", "DIRETOR")
-//
-//                //Todos os acessos as rotas para os analistas de RH
-//                .requestMatchers("/usuarios**").hasAuthority("RH")
-//                .requestMatchers("/usuarioTipo**").hasRole("RH")
-//                .requestMatchers("/estrutura**").hasAuthority("RH")
-//                .requestMatchers("/estruturaTipo**").hasAuthority("RH")
-//                .requestMatchers("/plano**").hasAuthority("RH")
-//                .requestMatchers("/planoDetalhe**").hasAuthority("RH")
-//                .requestMatchers("/transacao**").hasAuthority("RH")
-//                .requestMatchers("/transacaoItem**").hasAuthority("RH")
+                //Qualquer usuário pode fazer com autenticação
+                .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
+
+                //Somente visualização dos usuários e estruturas para administradores e diretores
+                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("ADMIN", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/usuarioTipo**").hasAnyRole("ADMIN", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/estruturaTipo/**").hasAnyRole("ADMIN", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/estrutura/**").hasAnyRole("ADMIN", "DIRETOR")
+
+                //Todos os acessos as rotas para os analistas de RH
+                .requestMatchers("/usuarios/**").hasRole("RH")
+                .requestMatchers("/usuarioTipo/**").hasRole("RH")
+                .requestMatchers("/estrutura/**").hasRole("RH")
+                .requestMatchers("/estruturaTipo/**").hasRole("RH")
+                .requestMatchers("/plano/**").hasRole("RH")
+                .requestMatchers("/planoDetalhe/**").hasRole("RH")
+                .requestMatchers("/transacao/**").hasRole("RH")
+                .requestMatchers("/transacaoItem/**").hasRole("RH")
 
 
                 .anyRequest().authenticated()

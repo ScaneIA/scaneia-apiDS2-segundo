@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-@RequestMapping("/api/planoDetalhe")
+@RequestMapping("/planoDetalhe")
 public interface PlanoDetalheOpenAPI {
 
 
@@ -20,7 +20,7 @@ public interface PlanoDetalheOpenAPI {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Planos detalhes listados com sucesso")
     })
-    @GetMapping("/selecionar")
+    @GetMapping()
     ResponseEntity<List<PlanoDetalheResponseDTO>> listarPlanosDetalhes();
 
     @Operation(summary = "Buscar plano detalhe por ID")
@@ -28,14 +28,14 @@ public interface PlanoDetalheOpenAPI {
             @ApiResponse(responseCode = "200", description = "Plano detalhe encontrado"),
             @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado")
     })
-    @GetMapping("/selecionar/{id}")
+    @GetMapping("/{id}")
     ResponseEntity<PlanoDetalheResponseDTO> listarPlanoDetalhePorId(@PathVariable Long id);
 
     @Operation(summary = "Adicionar novo plano detalhe")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Plano detalhe adicionado com sucesso")
     })
-    @PostMapping("/inserir")
+    @PostMapping()
     ResponseEntity<PlanoDetalheResponseDTO> inserirPlanoDetalhe(@Valid @RequestBody PlanoDetalheRequestDTO request);
 
     @Operation(summary = "Atualizar plano detalhe existente")
@@ -44,7 +44,7 @@ public interface PlanoDetalheOpenAPI {
             @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado")
     })
 
-    @PutMapping("/atualizar/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<PlanoDetalheResponseDTO> atualizarPlanoDetalheParcial(@PathVariable Long id,
                                                            @RequestBody @Validated({OnPatch.class, Default.class}) PlanoDetalheRequestDTO request);
 
@@ -53,7 +53,7 @@ public interface PlanoDetalheOpenAPI {
             @ApiResponse(responseCode = "200", description = "Plano detalhe deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado")
     })
-    @DeleteMapping("/excluir/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<String> deletarPlanoDetalhe(@PathVariable Long id);
 
 }

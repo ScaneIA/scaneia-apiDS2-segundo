@@ -1,9 +1,6 @@
 package org.example.scaneia_dsii.dtos;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 @Getter
@@ -15,7 +12,7 @@ public class PlanoDetalheRequestDTO {
     Double preco;
 
     @NotNull(message = "O campo qtd_meses é obrigatório")
-    @Min(value = 0, message = "A quantidade mínima de meses é 0")
+    @Size(min = 0, message = "A quantidade mínima de meses é 0")
     Integer qtdMeses;
 
     @NotNull(message = "O campo id_plano é obrigatório")

@@ -5,9 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
+@Getter
+@Setter
 public class EstruturaRequestDTO {
 
     @NotBlank(message = "A descrição é obrigatória")
@@ -30,25 +34,7 @@ public class EstruturaRequestDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dataAlteracao;
 
-    @NotNull(message = "O status da estrutura")
+    @NotNull(message = "O status da estrutura é obrigatório")
     private Boolean ativo;
-
-    public String getDescricao() {return descricao;}
-    public void setDescricao(String descricao) {this.descricao = descricao;}
-
-    public Integer getEstruturaId() {return estruturaId;}
-    public void setEstruturaId(Integer estruturaId) {this.estruturaId = estruturaId;}
-
-    public Integer getEstruturaTipoId() {return estruturaTipoId;}
-    public void setEstruturaTipoId(Integer estruturaTipoId) {this.estruturaTipoId = estruturaTipoId;}
-
-    public Date getDataCriacao() {return dataCriacao;}
-    public void setDataCriacao(Date dataCriacao) {this.dataCriacao = dataCriacao;}
-
-    public Date getDataAlteracao() {return dataAlteracao;}
-    public void setDataAlteracao(Date dataAlteracao) {this.dataAlteracao = dataAlteracao;}
-
-    public Boolean getAtivo() {return ativo;}
-    public void setAtivo(Boolean ativo) {this.ativo = ativo;}
 
 }

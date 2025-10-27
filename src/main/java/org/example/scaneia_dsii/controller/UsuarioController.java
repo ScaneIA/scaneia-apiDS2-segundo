@@ -50,4 +50,5 @@ public class UsuarioController implements UsuarioOpenAPI {
     public ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader) {
         return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(authHeader));
     }
+
 }

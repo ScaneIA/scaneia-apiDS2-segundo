@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/plano")
 public class PlanoController implements PlanoOpenAPI {
     private final PlanoService planoService;
 

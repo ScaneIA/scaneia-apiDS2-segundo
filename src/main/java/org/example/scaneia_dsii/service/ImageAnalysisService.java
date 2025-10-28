@@ -21,21 +21,26 @@ public class ImageAnalysisService {
     private String subscriptionKey;
 
     public Map<String, Object> analyzeImage(MultipartFile file) throws IOException {
-        ImageAnalysisClient client = new ImageAnalysisClientBuilder()
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            ImageAnalysisClient client = new ImageAnalysisClientBuilder()
                 .endpoint(endpoint)
                 .credential(new AzureKeyCredential(subscriptionKey))
                 .buildClient();
 
         ImageAnalysisOptions options = new ImageAnalysisOptions();
 
-        ImageAnalysisResult result = client.analyze(
-                BinaryData.fromStream(file.getInputStream()),
-                Arrays.asList(VisualFeatures.READ),
-                options
-        );
+            ImageAnalysisResult result = client.analyze(
+                    BinaryData.fromStream(file.getInputStream()),
+                    Arrays.asList(VisualFeatures.READ),
+                    options
+            );
+            response.put("fullResult", result);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Azure SDK rejected the image: " + e.getMessage());
+            throw e;
+        }
 
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("fullResult", result);
         return response;
     }
 }

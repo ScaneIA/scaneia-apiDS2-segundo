@@ -29,6 +29,7 @@ public class ImageAnalysisService {
                 .buildClient();
 
         ImageAnalysisOptions options = new ImageAnalysisOptions();
+            options.setLanguage("pt");
 
             ImageAnalysisResult result = client.analyze(
                     BinaryData.fromStream(file.getInputStream()),

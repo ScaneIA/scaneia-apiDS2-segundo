@@ -23,6 +23,9 @@ public class ImageAnalysisService {
     public Map<String, Object> analyzeImage(MultipartFile file) throws IOException {
         Map<String, Object> response = new LinkedHashMap<>();
         try {
+            System.out.println("Endpoint: " + endpoint);
+            System.out.println("Key: " + subscriptionKey.substring(0, 4) + "...");
+            
             ImageAnalysisClient client = new ImageAnalysisClientBuilder()
                 .endpoint(endpoint)
                 .credential(new AzureKeyCredential(subscriptionKey))

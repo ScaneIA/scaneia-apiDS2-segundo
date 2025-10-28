@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +75,13 @@ public class ManipuladorGlobalExcecoes {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> manipuladorHttpMessageNotReadableException(HttpMessageNotReadableException hmnre){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("JSON mal formatado!");
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<String> handleIOException(IOException ioe) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("I/O error: " + ioe.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

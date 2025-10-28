@@ -4,10 +4,8 @@ import io.jsonwebtoken.*;
 import org.example.scaneia_dsii.config.JwtProperties;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
 @Service
 public class JwtService {
 
@@ -38,6 +36,9 @@ public class JwtService {
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getRefreshSecret())
                 .compact();
         redisTemplate.opsForValue().set(username, token, jwtProperties.getRefreshExpiration(), TimeUnit.MILLISECONDS);
+        // Teste: ver se realmente salvou
+        String tokenSalvo = redisTemplate.opsForValue().get(username);
+        System.out.println("Token salvo no Redis: " + tokenSalvo);
         return token;
     }
 
@@ -58,9 +59,6 @@ public class JwtService {
                     .getBody();
             String subject = claims.getSubject();
             String[] partes = subject.split("\\|");
-            System.out.println("username");
-            System.out.println(partes[0]);
-            System.out.println(partes[1]);
             return partes[0];
         } catch (ExpiredJwtException e) {
             throw new RuntimeException("Token expirado");
@@ -68,24 +66,20 @@ public class JwtService {
             throw new RuntimeException("Token inválido");
         }
     }
-
-
-    public String extrairUsuarioTipo(String token) {
+    public String extrairUsuarioTipoRefreshToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(jwtProperties.getAccessSecret())
+                    .setSigningKey(jwtProperties.getRefreshSecret())
                     .parseClaimsJws(token)
                     .getBody();
             String subject = claims.getSubject();
             String[] partes = subject.split("\\|");
-            System.out.println("rolee");
-            System.out.println(partes[0]);
             System.out.println(partes[1]);
             return partes[1];
         } catch (ExpiredJwtException e) {
             throw new RuntimeException("Token expirado");
         } catch (JwtException e) {
-            throw new RuntimeException("Token inválido");
+            throw new RuntimeException("Token inválidooo");
         }
     }
 

@@ -14,6 +14,8 @@ public class UsuarioResponseDTO {
 
     private String cpf;
 
+    private String senha;
+
     private String email;
 
     private Long idUsuarioTipo;

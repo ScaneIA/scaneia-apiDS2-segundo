@@ -69,7 +69,7 @@ public class PlanoService {
     @Transactional
     public void deletarPlano(Integer id){
         if (!planoRepository.existsById(id)){
-            throw new EmptyResultDataAccessException(1);
+            throw new EntityNotFoundException("Plano não encontrado");
         }
         planoRepository.deleteById(id);
     }

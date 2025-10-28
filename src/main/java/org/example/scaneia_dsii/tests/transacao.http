@@ -1,0 +1,39 @@
+### Listar todas as transações
+#GET http://localhost:8082/transacao/selecionar
+#Accept: application/json
+
+###
+
+### Buscar transação por ID
+GET http://localhost:8082/transacao/selecionar/1
+Accept: application/json
+
+###
+
+### Criar transação
+#POST http://localhost:8082/transacao/inserir
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "valorTotal": 150.0,
+#  "estrutura_id": 1,
+#  "dataCriacao": "2025-10-17",
+#  "dataAlteracao": "2025-10-17"
+#}
+
+###
+
+### Atualizar transação
+#PUT http://localhost:8082/transacao/atualizar/1
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "valorTotal": 200.0
+#}
+
+###
+
+### Deletar transação
+#DELETE http://localhost:8082/transacao/excluir/1

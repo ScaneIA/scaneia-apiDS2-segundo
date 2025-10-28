@@ -21,10 +21,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO dto) {
         usuarioService.validarCredenciais(dto.getUsername(), dto.getPassword());
-
-        String accessToken = jwtService.gerarAccessToken(dto.getUsername());
-        String refreshToken = jwtService.gerarRefreshToken(dto.getUsername());
-
+        String usuarioTipo = usuarioService.recuperarTipoUsuario(dto.getUsername());
+        String accessToken = jwtService.gerarAccessToken(dto.getUsername(), usuarioTipo);
+        String refreshToken = jwtService.gerarRefreshToken(dto.getUsername(), usuarioTipo);
         return ResponseEntity.ok(new AuthResponseDTO(accessToken, refreshToken));
     }
 
@@ -35,7 +34,8 @@ public class AuthController {
         }
 
         String username = jwtService.extrairUsernameRefreshToken(dto.getRefreshToken());
-        String accessToken = jwtService.gerarAccessToken(username);
+        String usuarioTipo = jwtService.extrairUsuarioTipo(dto.getRefreshToken());
+        String accessToken = jwtService.gerarAccessToken(username, usuarioTipo);
 
         return ResponseEntity.ok(new AuthResponseDTO(accessToken, dto.getRefreshToken()));
     }

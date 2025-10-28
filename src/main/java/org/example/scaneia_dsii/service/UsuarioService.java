@@ -4,11 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO;
 import org.example.scaneia_dsii.model.Usuario;
+import org.example.scaneia_dsii.model.UsuarioTipo;
 import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
+import org.example.scaneia_dsii.repository.UsuarioTipoRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -22,13 +26,19 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+
+    private final UsuarioTipoRepository usuarioTipoRepository;
     private final ObjectMapper objectMapper;
     @Getter
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final JwtService jwtService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, ObjectMapper objectMapper) {
+
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioTipoRepository usuarioTipoRepository, ObjectMapper objectMapper, JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioTipoRepository = usuarioTipoRepository;
         this.objectMapper = objectMapper;
+        this.jwtService = jwtService;
     }
     public UsuarioResponseDTO inserirUsuario (UsuarioRequestDTO request) {
         if (usuarioRepository.existsByCpf(request.getCpf())) {
@@ -38,6 +48,7 @@ public class UsuarioService {
             throw new RuntimeException("Email já cadastrado"); //Excessao personalizada
         }
         Usuario novoUsuario = objectMapper.convertValue(request, Usuario.class);
+        novoUsuario.setSenha(passwordEncoder.encode(request.getSenha()));
         novoUsuario.setDataCriacao(new Date());
         usuarioRepository.save(novoUsuario);
         return objectMapper.convertValue(novoUsuario, UsuarioResponseDTO.class);
@@ -93,19 +104,41 @@ public class UsuarioService {
     @Transactional
     public void deletarUsuario(Long id){
         if (!usuarioRepository.existsById(id)){
-            throw new EmptyResultDataAccessException(1);
+            throw new EntityNotFoundException("Usuário não encontrado");
         }
         usuarioRepository.deleteById(id);
+    }
+
+    public UsuarioPerfilResponseDTO filtrarInformacoesUsuario(String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtService.extrairUsername(token);
+
+        if (!usuarioRepository.existsByEmail(username)) {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+        return usuarioRepository.filtrarInformacoesUsuarios(username);
     }
 
     public void validarCredenciais(String email, String password) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        if (!passwordEncoder.matches(password, passwordEncoder.encode(usuario.getSenha()))) {
+        if (!passwordEncoder.matches(password, usuario.getSenha())) {
+            System.out.println("Senha incorreta para o usuário: " + email);
             throw new RuntimeException("Senha inválida");
         }
+
+        System.out.println("Usuário autenticado com sucesso: " + email);
     }
+
+    public String recuperarTipoUsuario(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        UsuarioTipo usuarioTipo = usuarioTipoRepository.findById(usuario.getIdUsuarioTipo()).get();
+        return usuarioTipo.getDescricao();
+    }
+
+
 
 }
 

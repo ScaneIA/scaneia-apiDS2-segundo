@@ -20,31 +20,21 @@ public class ImageAnalysisService {
     @Value("${azure.vision.key}")
     private String subscriptionKey;
 
-    public Map<String, Object> analyzeImage(MultipartFile file) throws IOException {
-        Map<String, Object> response = new LinkedHashMap<>();
-        try {
-            System.out.println("Endpoint: " + endpoint);
-            System.out.println("Key: " + subscriptionKey.substring(0, 4) + "...");
-            
-            ImageAnalysisClient client = new ImageAnalysisClientBuilder()
+    public Map<String, Object> analyzeImage(String url) throws IOException {
+        ImageAnalysisClient client = new ImageAnalysisClientBuilder()
                 .endpoint(endpoint)
                 .credential(new AzureKeyCredential(subscriptionKey))
                 .buildClient();
 
         ImageAnalysisOptions options = new ImageAnalysisOptions();
-            options.setLanguage("pt");
 
-            ImageAnalysisResult result = client.analyze(
-                    BinaryData.fromStream(file.getInputStream()),
-                    Arrays.asList(VisualFeatures.READ),
-                    options
-            );
-            response.put("fullResult", result);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Azure SDK rejected the image: " + e.getMessage());
-            throw e;
-        }
+        // Here we use the URL directly
+        ImageAnalysisResult result = client.analyzeFromUrl(
+                url,  // passing the URL directly
+                Arrays.asList(VisualFeatures.READ),
+                options
+        );
 
-        return response;
+        return Map.of("fullResult", result);
     }
 }

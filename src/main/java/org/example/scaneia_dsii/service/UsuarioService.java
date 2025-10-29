@@ -87,7 +87,8 @@ public class UsuarioService {
             usuario.setCpf(request.getCpf());
         }
         if (request.getSenha() != null) {
-            usuario.setSenha(request.getSenha());
+            usuario.setSenha(passwordEncoder.encode(request.getSenha()));
+
         }
         if (request.getEmail() != null) {
             usuario.setEmail(request.getEmail());
@@ -120,8 +121,12 @@ public class UsuarioService {
     }
 
     public void validarCredenciais(String email, String password) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        Usuario usuario = usuarioRepository.findByEmail(email);
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
+        System.out.println(new BCryptPasswordEncoder().encode("123456"));
 
         if (!passwordEncoder.matches(password, usuario.getSenha())) {
             System.out.println("Senha incorreta para o usuário: " + email);
@@ -132,8 +137,10 @@ public class UsuarioService {
     }
 
     public String recuperarTipoUsuario(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        Usuario usuario = usuarioRepository.findByEmail(email);
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
         UsuarioTipo usuarioTipo = usuarioTipoRepository.findById(usuario.getIdUsuarioTipo()).get();
         return usuarioTipo.getDescricao();
     }

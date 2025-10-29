@@ -2,19 +2,32 @@ package org.example.scaneia_dsii.service;
 
 import io.jsonwebtoken.*;
 import org.example.scaneia_dsii.config.JwtProperties;
+import org.example.scaneia_dsii.model.Usuario;
+import org.example.scaneia_dsii.model.UsuarioAcessoLogDau;
+import org.example.scaneia_dsii.repository.UsuarioAcessoLogDauRepository;
+import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.*;
+
+
 @Service
 public class JwtService {
 
     private final JwtProperties jwtProperties;
     private final StringRedisTemplate redisTemplate;
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository;
 
-    public JwtService(JwtProperties jwtProperties, StringRedisTemplate redisTemplate) {
+    public JwtService(JwtProperties jwtProperties, StringRedisTemplate redisTemplate, UsuarioRepository usuarioRepository, UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository) {
         this.jwtProperties = jwtProperties;
         this.redisTemplate = redisTemplate;
+        this.usuarioRepository = usuarioRepository;
+        this.usuarioAcessoLogDauRepository = usuarioAcessoLogDauRepository;
     }
 
     // Gera Access Token
@@ -29,12 +42,17 @@ public class JwtService {
 
     // Gera Refresh Token e salva no Redis
     public String gerarRefreshToken(String username, String usuarioTipo) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+
         String token = Jwts.builder()
+                .setClaims(claims)
                 .setSubject(username + "|" + usuarioTipo)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getRefreshSecret())
                 .compact();
+
         redisTemplate.opsForValue().set(username, token, jwtProperties.getRefreshExpiration(), TimeUnit.MILLISECONDS);
         // Teste: ver se realmente salvou
         String tokenSalvo = redisTemplate.opsForValue().get(username);
@@ -92,6 +110,23 @@ public class JwtService {
     }
 
     public void revogarRefreshToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtProperties.getRefreshSecret())
+                .parseClaimsJws(token)
+                .getBody();
+
+        String email = claims.get("username", String.class);
+
+        Usuario user = usuarioRepository.findByEmail(email);
+
+        UsuarioAcessoLogDau log = usuarioAcessoLogDauRepository
+                .findUltimoAcessoPorUsuario(user.getId())
+                        .orElseThrow(() -> new RuntimeException("Nenhum acesso ativo encontrado."));
+
+        log.setDataLogout(OffsetDateTime.now());
+
+        usuarioAcessoLogDauRepository.save(log);
+
         redisTemplate.delete(token);
     }
 }

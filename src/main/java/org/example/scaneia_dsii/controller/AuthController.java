@@ -8,9 +8,11 @@ import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.example.scaneia_dsii.service.JwtService;
 import org.example.scaneia_dsii.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -32,10 +34,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO dto) {
         usuarioService.validarCredenciais(dto.getUsername(), dto.getPassword());
-        String usuarioTipo = usuarioService.recuperarTipoUsuario(dto.getUsername());
-        String accessToken = jwtService.gerarAccessToken(dto.getUsername(), usuarioTipo);
-        String refreshToken = jwtService.gerarRefreshToken(dto.getUsername(), usuarioTipo);
+        String accessToken = jwtService.gerarAccessToken(dto.getUsername());
+        String refreshToken = jwtService.gerarRefreshToken(dto.getUsername());
         Usuario user = usuarioRepository.findByEmail(dto.getUsername());
+
 
         UsuarioAcessoLogDau log = new UsuarioAcessoLogDau();
         log.setIdUsuario(user.getId());
@@ -55,7 +57,7 @@ public class AuthController {
 
         String username = jwtService.extrairUsernameRefreshToken(dto.getRefreshToken());
         String usuarioTipo = jwtService.extrairUsuarioTipoRefreshToken(dto.getRefreshToken());
-        String accessToken = jwtService.gerarAccessToken(username, usuarioTipo);
+        String accessToken = jwtService.gerarAccessToken(username);
 
         return ResponseEntity.ok(new AuthResponseDTO(accessToken, dto.getRefreshToken()));
     }

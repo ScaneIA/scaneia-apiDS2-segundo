@@ -62,6 +62,20 @@ public class UsuarioController implements UsuarioOpenAPI {
         return ResponseEntity.ok(resultado);
     }
 
+    @PutMapping("/foto")
+    public ResponseEntity<UsuarioResponseDTO> atualizarFoto(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam("urlPhoto") String urlPhoto
+    ) {
+        // Extract username from JWT
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtService.extrairUsername(token);
+
+        // Call service to update the user’s photo by username instead of ID
+        UsuarioResponseDTO response = usuarioService.atualizarFotoPorEmail(username, urlPhoto);
+        return ResponseEntity.ok(response);
+    }
+
 //    @Override
 //    public ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader) {
 //        return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(authHeader));

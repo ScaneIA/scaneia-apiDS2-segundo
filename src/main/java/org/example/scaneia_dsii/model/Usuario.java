@@ -36,4 +36,6 @@ public class Usuario {
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private Date dataCriacao;
 
+    @Column(name = "url_photo", length = 500)
+    private String urlPhoto;
 }

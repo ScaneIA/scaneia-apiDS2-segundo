@@ -19,9 +19,18 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 //    @Query("select u.nome, u.email, u.dataCriacao, u.cpf from Usuario u where u.id = :id")
 //    UsuarioPerfilResponseDTO filtrarInformacoesUsuarios(@Param("id") Long id);
 
-    @Query("select new org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO(u.nome, u.email, u.dataCriacao, u.cpf)" +  "from Usuario u where u.email = :username")
+    @Query("""
+    select new org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO(
+        u.nome,
+        u.email,
+        u.dataCriacao,
+        u.cpf,
+        u.urlPhoto
+    )
+    from Usuario u
+    where u.email = :username
+""")
     UsuarioPerfilResponseDTO filtrarInformacoesUsuarios(@Param("username") String username);
-
     @Query(value = "SELECT id_usuario AS idUsuario, nome_usuario AS nomeUsuario, " +
             "id_usuario_tipo AS idUsuarioTipo, descricao_usuario_tipo AS descricaoUsuarioTipo " +
             "FROM fn_usuarios_hierarquia(:idUsuario, :orientacao)",

@@ -155,5 +155,20 @@ public class UsuarioService {
 
         return map;
     }
+
+    @Transactional
+    public UsuarioResponseDTO atualizarFotoPorEmail(String email, String urlPhoto) {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+
+        if (usuario == null) {
+            throw new EntityNotFoundException("Usuário com email " + email + " não encontrado");
+        }
+
+        usuario.setUrlPhoto(urlPhoto);
+        usuarioRepository.save(usuario);
+
+        return objectMapper.convertValue(usuario, UsuarioResponseDTO.class);
+    }
+
 }
 

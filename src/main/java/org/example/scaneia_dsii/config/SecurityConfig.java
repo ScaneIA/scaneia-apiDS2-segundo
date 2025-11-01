@@ -35,10 +35,10 @@ public class SecurityConfig {
                 // Public routes
                 .requestMatchers("/auth/**", "/ping", "/usuarios/hierarquia/**").permitAll()
 
-                //Temporário
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/usuarios/foto").permitAll()
 
-                //Qualquer usuário pode fazer com autenticação
+                    //Qualquer usuário pode fazer com autenticação
                 .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
                 .requestMatchers(HttpMethod.GET, "/usuarios/perfil").permitAll()
 

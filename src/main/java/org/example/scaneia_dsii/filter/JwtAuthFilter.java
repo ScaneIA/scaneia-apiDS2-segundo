@@ -80,8 +80,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String username = partes[0];
             String role = partes.length > 1 ? partes[1] : "USER"; // fallback caso falte a role
 
-            System.out.println("filterr");
-            System.out.println(username);
             System.out.println(role);
             var authority = new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role);
             var auth = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));

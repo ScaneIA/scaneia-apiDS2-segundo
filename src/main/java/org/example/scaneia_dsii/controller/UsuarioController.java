@@ -5,6 +5,7 @@ import org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO;
 import org.example.scaneia_dsii.openapi.UsuarioOpenAPI;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
+import org.example.scaneia_dsii.service.JwtService;
 import org.example.scaneia_dsii.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,10 @@ import java.util.List;
 public class UsuarioController implements UsuarioOpenAPI {
 
     private final UsuarioService usuarioService;
+    private final JwtService jwtService;
 
-    public UsuarioController(UsuarioService service) {
+    public UsuarioController(UsuarioService service, JwtService jwtService) {
+        this.jwtService = jwtService;
         this.usuarioService = service;
     }
 
@@ -50,5 +53,13 @@ public class UsuarioController implements UsuarioOpenAPI {
     public ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader) {
         return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(authHeader));
     }
+
+    @PostMapping("/perfil")
+    public ResponseEntity<UsuarioPerfilResponseDTO> getPerfil(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtService.extrairUsername(token); // chama AQUI
+        return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(username));
+    }
+
 
 }

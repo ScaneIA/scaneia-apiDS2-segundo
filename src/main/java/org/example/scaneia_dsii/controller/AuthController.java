@@ -33,11 +33,19 @@ public class AuthController {
             return ResponseEntity.status(401).build();
         }
 
-        String username = jwtService.extrairUsernameRefreshToken(dto.getRefreshToken());
-        String usuarioTipo = jwtService.extrairUsuarioTipo(dto.getRefreshToken());
-        String accessToken = jwtService.gerarAccessToken(username, usuarioTipo);
+        try {
+            String username = jwtService.extrairUsernameRefreshToken(dto.getRefreshToken());
+            String usuarioTipo = jwtService.extrairUsuarioTipoRefreshToken(dto.getRefreshToken());
 
-        return ResponseEntity.ok(new AuthResponseDTO(accessToken, dto.getRefreshToken()));
+            jwtService.revogarRefreshToken(dto.getRefreshToken());
+
+            String accessToken = jwtService.gerarAccessToken(username, usuarioTipo);
+            String newRefreshToken = jwtService.gerarRefreshToken(username, usuarioTipo);
+
+            return ResponseEntity.ok(new AuthResponseDTO(accessToken, newRefreshToken));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(null);
+        }
     }
 
     @PostMapping("/logout")

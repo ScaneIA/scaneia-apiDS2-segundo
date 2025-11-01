@@ -89,16 +89,60 @@ public class JwtService {
         }
     }
 
-    public boolean validarRefreshToken(String token) {
-        return redisTemplate.hasKey(token);
+    public String extrairUsuarioTipoRefreshToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtProperties.getRefreshSecret())
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject().split("\\|")[1];
+        } catch (JwtException e) {
+            throw new RuntimeException("Refresh token inválido");
+        }
     }
 
+
+    public boolean validarRefreshToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtProperties.getRefreshSecret())
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String subject = claims.getSubject(); // e.g. "username|role"
+            String[] partes = subject.split("\\|");
+            String username = partes[0];
+
+            String storedToken = redisTemplate.opsForValue().get(username);
+            return token.equals(storedToken);
+
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
+
     public String extrairUsernameRefreshToken(String token) {
-        return redisTemplate.opsForValue().get(token);
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtProperties.getRefreshSecret())
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject().split("\\|")[0];
+        } catch (JwtException e) {
+            throw new RuntimeException("Refresh token inválido");
+        }
     }
 
     public void revogarRefreshToken(String token) {
-        redisTemplate.delete(token);
-    }
-}
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtProperties.getRefreshSecret())
+                    .parseClaimsJws(token)
+                    .getBody();
+            String username = claims.getSubject().split("\\|")[0];
+            redisTemplate.delete(username);
+        } catch (JwtException e) {
+        }
+    }}
 

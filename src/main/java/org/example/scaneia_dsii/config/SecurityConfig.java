@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/transacao/**").hasRole("RH")
                 .requestMatchers("/transacaoItem/**").hasRole("RH")
 
-                .requestMatchers("/vision/analyse").hasAnyRole("OPERARIO")
+                .requestMatchers("/vision/analyze").hasAnyRole("COLABORADOR")
 
 
                 .anyRequest().authenticated()

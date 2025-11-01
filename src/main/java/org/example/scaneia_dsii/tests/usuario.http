@@ -1,49 +1,52 @@
-#### Listar usuários
-#GET http://localhost:8082/usuarios
-#Accept: application/json
-#Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvLnNpbHZhQGpicy5jb20uYnIiLCJpYXQiOjE3NjA2OTcwMjUsImV4cCI6MTc2MDY5NzkyNX0.iNIwtFqirqAEKaiQJ1FbnNyzNgLn-ZAWynekMkU1lrU
+### Listar usuários
+GET http://localhost:8082/usuarios
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2FvLnNpbHZhQGpicy5jb20uYnIiLCJpYXQiOjE3NjA2OTcwMjUsImV4cCI6MTc2MDY5NzkyNX0.iNIwtFqirqAEKaiQJ1FbnNyzNgLn-ZAWynekMkU1lrU
 
-##### Buscar usuário por ID
-##GET http://localhost:8082/usuarios/16
-##Accept: application/json
-#
-####
-#
-#### Criar usuário
-##POST http://localhost:8082/usuarios
-##Content-Type: application/json
-##Accept: application/json
-##
-##{
-##  "nome": "Maria Silva",
-##  "cpf": "12345678901",
-##  "senha": "minhasenha",
-##  "email": "maria.silva@example.com",
-##  "idUsuarioTipo": 1,
-##  "idEstrutura": 1
-##}
-#
-####
-#
-#### Atualizar usuário
-##PUT http://localhost:8082/usuarios/16
-##Content-Type: application/json
-##Accept: application/json
-##
-##{
-##  "nome": "Maria Oliveira Silva"
-##}
-#
-####
-#
-#### Deletar usuário
-##DELETE http://localhost:8082/usuarios/16
-##
+### Buscar usuário por ID
+GET http://localhost:8082/usuarios/16
+Accept: application/json
+
+
+### Criar usuário
+POST http://localhost:8082/usuarios
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nome": "Maria Silva",
+  "cpf": "12345678901",
+  "senha": "minhasenha",
+  "email": "maria.silva@example.com",
+  "idUsuarioTipo": 1,
+  "idEstrutura": 1
+}
+
+### Atualizar usuário
+PUT http://localhost:8082/usuarios/16
+Content-Type: application/json
+Accept: application/json
+
+{
+  "nome": "Maria Oliveira Silva"
+}
+
+### Deletar usuário
+DELETE http://localhost:8082/usuarios/16
+
 ### Login
-#POST http://localhost:8082/auth/login
-#Content-Type: application/json
-#
-#{
-#  "username": "joao.silva@jbs.com.br",
-#  "password": "AF0479B889F3519F2E94BEDF6585CA9A03E6963BAC703F201C0A34B86F4479C7"
-#}
+POST http://localhost:8082/auth/login
+Content-Type: application/json
+
+{
+  "username": "hermione.granger@hotmail.com",
+  "password": "senha"
+}
+
+### Logout
+POST http://localhost:8082/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImJydW5hLmxpbWFAamJzLmNvbS5iciIsInN1YiI6ImJydW5hLmxpbWFAamJzLmNvbS5icnxSSCIsImlhdCI6MTc2MTc0NzQxNywiZXhwIjoxNzYyMzUyMjE3fQ.8OmFxo9DBd-T1Q_NVHSbbSPCTTymE6MLl-hqATKj1W0"
+}

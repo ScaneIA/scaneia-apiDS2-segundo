@@ -13,7 +13,8 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
-    Optional<Usuario> findByEmail(String email);
+    Usuario findByEmail(String email);
+
 //    @Query("select u.nome, u.email, u.dataCriacao, u.cpf from Usuario u where u.id = :id")
 //    UsuarioPerfilResponseDTO filtrarInformacoesUsuarios(@Param("id") Long id);
 

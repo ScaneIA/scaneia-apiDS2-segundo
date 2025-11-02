@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**", "/ping").permitAll()
                 // Temporary open registration
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
                 // Authenticated routes
                 .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
                 .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("ADMIN", "DIRETOR")

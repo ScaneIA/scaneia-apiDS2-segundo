@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO;
 import org.example.scaneia_dsii.model.Usuario;
+import org.example.scaneia_dsii.model.UsuarioHierarquiaProjection;
 import org.example.scaneia_dsii.model.UsuarioTipo;
 import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
@@ -33,6 +34,10 @@ public class UsuarioService {
         this.usuarioTipoRepository = usuarioTipoRepository;
         this.objectMapper = objectMapper;
     }
+    public List<UsuarioHierarquiaProjection> listarHierarquia(Long idUsuario, String orientacao) {
+        return usuarioRepository.buscarUsuariosHierarquia(idUsuario, orientacao);
+    }
+
     public UsuarioResponseDTO inserirUsuario (UsuarioRequestDTO request) {
         if (usuarioRepository.existsByCpf(request.getCpf())) {
             throw new RuntimeException("CPF já cadastrado"); //Excessao personalizada

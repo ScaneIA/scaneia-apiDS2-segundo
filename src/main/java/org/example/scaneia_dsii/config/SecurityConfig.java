@@ -27,6 +27,7 @@ public class SecurityConfig {
                 //Qualquer usuário pode fazer sem autenticação
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/ping").permitAll()
+                .requestMatchers("/usuarios/hierarquia/**").permitAll()
 
                 //Temporário
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()

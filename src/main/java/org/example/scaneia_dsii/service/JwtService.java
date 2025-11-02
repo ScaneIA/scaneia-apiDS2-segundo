@@ -9,11 +9,12 @@ import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.*;
-
 
 @Service
 public class JwtService {
@@ -24,7 +25,11 @@ public class JwtService {
     private final UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository;
     private final UsuarioService usuarioService;
 
-    public JwtService(JwtProperties jwtProperties, StringRedisTemplate redisTemplate,UsuarioService usuarioService, UsuarioRepository usuarioRepository, UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository) {
+    public JwtService(JwtProperties jwtProperties,
+                      StringRedisTemplate redisTemplate,
+                      UsuarioService usuarioService,
+                      UsuarioRepository usuarioRepository,
+                      UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository) {
         this.jwtProperties = jwtProperties;
         this.redisTemplate = redisTemplate;
         this.usuarioRepository = usuarioRepository;
@@ -32,116 +37,132 @@ public class JwtService {
         this.usuarioService = usuarioService;
     }
 
-    // Gera Access Token
+    // -------------------- ACCESS TOKEN --------------------
     public String gerarAccessToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        String usuarioTipo = usuarioService.recuperarTipoUsuario(username);
-        Map<String, Object> map = usuarioService.recuperarIds(username);
         claims.put("username", username);
-        claims.putAll(map);
+        claims.put("usuario_tipo", usuarioService.recuperarTipoUsuario(username));
+        claims.putAll(usuarioService.recuperarIds(username));
+
+        byte[] secret = jwtProperties.getAccessSecret().getBytes(StandardCharsets.UTF_8);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username + "|" + usuarioTipo)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.getAccessSecret())
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
-    }
-
-    // Gera Refresh Token e salva no Redis
-    public String gerarRefreshToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        String usuarioTipo = usuarioService.recuperarTipoUsuario(username);
-        Map<String, Object> map = usuarioService.recuperarIds(username);
-        claims.put("username", username);
-        claims.put("usuario_tipo", usuarioTipo);
-        claims.putAll(map);
-
-
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username + "|" + usuarioTipo)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.getRefreshSecret())
-                .compact();
-
-        redisTemplate.opsForValue().set(username, token, jwtProperties.getRefreshExpiration(), TimeUnit.MILLISECONDS);
-        // Teste: ver se realmente salvou
-        String tokenSalvo = redisTemplate.opsForValue().get(username);
-        System.out.println("Token salvo no Redis: " + tokenSalvo);
-        return token;
     }
 
     public boolean validarAccessToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtProperties.getAccessSecret()).parseClaimsJws(token);
+            byte[] secret = jwtProperties.getAccessSecret().getBytes(StandardCharsets.UTF_8);
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            System.out.println("TRUEEE");
             return true;
         } catch (JwtException e) {
+            System.out.println("FALSE:: " + e.getMessage());
             return false;
         }
     }
 
     public String extrairUsername(String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(jwtProperties.getAccessSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
-            String subject = claims.getSubject();
-            String[] partes = subject.split("\\|");
-            return partes[0];
-        } catch (ExpiredJwtException e) {
-            throw new RuntimeException("Token expirado");
+            byte[] secret = jwtProperties.getAccessSecret().getBytes(StandardCharsets.UTF_8);
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return claims.get("username", String.class);
         } catch (JwtException e) {
-            throw new RuntimeException("Token inválido");
+            throw new RuntimeException("Token inválido ou expirado");
         }
     }
-    public String extrairUsuarioTipoRefreshToken(String token) {
+
+    public String extrairUsuarioTipo(String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(jwtProperties.getRefreshSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
-            String subject = claims.getSubject();
-            String[] partes = subject.split("\\|");
-            System.out.println(partes[1]);
-            return partes[1];
-        } catch (ExpiredJwtException e) {
-            throw new RuntimeException("Token expirado");
+            byte[] secret = jwtProperties.getAccessSecret().getBytes(StandardCharsets.UTF_8);
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return claims.get("usuario_tipo", String.class);
         } catch (JwtException e) {
-            throw new RuntimeException("Token inválidooo");
+            throw new RuntimeException("Token inválido ou expirado");
         }
+    }
+
+    // -------------------- REFRESH TOKEN --------------------
+    public String gerarRefreshToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("usuario_tipo", usuarioService.recuperarTipoUsuario(username));
+        claims.putAll(usuarioService.recuperarIds(username));
+
+        byte[] secret = jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8);
+
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+
+        // Redis: username as key, token as value
+        redisTemplate.opsForValue().set(username, token, jwtProperties.getRefreshExpiration(), TimeUnit.MILLISECONDS);
+
+        return token;
     }
 
     public boolean validarRefreshToken(String token) {
-        return redisTemplate.hasKey(token);
+        try {
+            byte[] secret = jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8);
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            String username = claims.get("username", String.class);
+
+            String storedToken = redisTemplate.opsForValue().get(username);
+            return token.equals(storedToken);
+
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     public String extrairUsernameRefreshToken(String token) {
-        return redisTemplate.opsForValue().get(token);
+        try {
+            byte[] secret = jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8);
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return claims.get("username", String.class);
+        } catch (JwtException e) {
+            throw new RuntimeException("Refresh token inválido ou expirado");
+        }
+    }
+
+    public String extrairUsuarioTipoRefreshToken(String token) {
+        try {
+            byte[] secret = jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8);
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return claims.get("usuario_tipo", String.class);
+        } catch (JwtException e) {
+            throw new RuntimeException("Refresh token inválido ou expirado");
+        }
     }
 
     public void revogarRefreshToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtProperties.getRefreshSecret())
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            byte[] secret = jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8);
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            String username = claims.get("username", String.class);
 
-        String email = claims.get("username", String.class);
+            if (username != null) {
+                Usuario user = usuarioRepository.findByEmail(username);
+                if (user != null) {
+                    UsuarioAcessoLogDau log = usuarioAcessoLogDauRepository
+                            .findUltimoAcessoPorUsuario(user.getId())
+                            .orElse(null);
+                    if (log != null) {
+                        log.setDataLogout(OffsetDateTime.now());
+                        usuarioAcessoLogDauRepository.save(log);
+                    }
+                }
 
-        Usuario user = usuarioRepository.findByEmail(email);
-
-        UsuarioAcessoLogDau log = usuarioAcessoLogDauRepository
-                .findUltimoAcessoPorUsuario(user.getId())
-                        .orElseThrow(() -> new RuntimeException("Nenhum acesso ativo encontrado."));
-
-        log.setDataLogout(OffsetDateTime.now());
-
-        usuarioAcessoLogDauRepository.save(log);
-
-        redisTemplate.delete(token);
+                redisTemplate.delete(username);
+            }
+        } catch (JwtException ignored) {
+        }
     }
 }
-

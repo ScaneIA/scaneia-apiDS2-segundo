@@ -33,13 +33,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
 
                 //Qualquer usuário pode fazer com autenticação
-                .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
+                .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("COLABORADOR", "CHEFE_DE_AREA", "DIRETOR", "RH")
 
                 //Somente visualização dos usuários e estruturas para administradores e diretores
-                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("ADMIN", "DIRETOR")
-                .requestMatchers(HttpMethod.GET, "/usuarioTipo**").hasAnyRole("ADMIN", "DIRETOR")
-                .requestMatchers(HttpMethod.GET, "/estruturaTipo/**").hasAnyRole("ADMIN", "DIRETOR")
-                .requestMatchers(HttpMethod.GET, "/estrutura/**").hasAnyRole("ADMIN", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/usuarioTipo**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/estruturaTipo/**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/estrutura/**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
 
                 //Todos os acessos as rotas para os analistas de RH
                 .requestMatchers("/usuarios/**").hasRole("RH")
@@ -50,7 +50,6 @@ public class SecurityConfig {
                 .requestMatchers("/planoDetalhe/**").hasRole("RH")
                 .requestMatchers("/transacao/**").hasRole("RH")
                 .requestMatchers("/transacaoItem/**").hasRole("RH")
-
                 .requestMatchers("/vision/analyze").hasAnyRole("COLABORADOR")
 
 

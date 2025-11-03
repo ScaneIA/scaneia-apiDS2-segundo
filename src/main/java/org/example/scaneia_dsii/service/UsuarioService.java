@@ -46,7 +46,6 @@ public class UsuarioService {
             throw new RuntimeException("Email já cadastrado"); //Excessao personalizada                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      org.checkerframework.checker.units.qual.C |q
         }
         Usuario novoUsuario = objectMapper.convertValue(request, Usuario.class);
-        novoUsuario.setSenha(passwordEncoder.encode(request.getSenha()));
         novoUsuario.setDataCriacao(new Date());
         usuarioRepository.save(novoUsuario);
         return objectMapper.convertValue(novoUsuario, UsuarioResponseDTO.class);
@@ -83,10 +82,6 @@ public class UsuarioService {
         }
         if (request.getCpf() != null) {
             usuario.setCpf(request.getCpf());
-        }
-        if (request.getSenha() != null) {
-            usuario.setSenha(passwordEncoder.encode(request.getSenha()));
-
         }
         if (request.getEmail() != null) {
             usuario.setEmail(request.getEmail());

@@ -32,8 +32,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public routes
-                .requestMatchers("/auth/**", "/ping").permitAll()
-                // Temporary open registration
+                .requestMatchers("/auth/**", "/ping", "/usuarios/hierarquia/**").permitAll()
+                                   
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                 .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
                 // Authenticated routes

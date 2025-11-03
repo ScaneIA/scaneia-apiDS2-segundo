@@ -50,3 +50,13 @@ Content-Type: application/json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImJydW5hLmxpbWFAamJzLmNvbS5iciIsInN1YiI6ImJydW5hLmxpbWFAamJzLmNvbS5icnxSSCIsImlhdCI6MTc2MTc0NzQxNywiZXhwIjoxNzYyMzUyMjE3fQ.8OmFxo9DBd-T1Q_NVHSbbSPCTTymE6MLl-hqATKj1W0"
 }
+
+### Hierarquia de Usuários (buscar abaixo)
+GET http://localhost:8082/usuarios/hierarquia/18?orientacao=ABAIXO
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZF91c3VhcmlvIjoyOCwiaWRfZXN0cnV0dXJhIjoxLCJpZF90aXBvX3VzdWFyaW8iOjEsInVzZXJuYW1lIjoiaGVybWlvbmUuZ3JhbmdlckBob3RtYWlsLmNvbSIsInN1YiI6Imhlcm1pb25lLmdyYW5nZXJAaG90bWFpbC5jb218RElSRVRPUiIsImlhdCI6MTc2MjEyNTIwMywiZXhwIjoxNzYyMTI2MTAzfQ.0q4DB5DmL25eKnso0_VIlBi4KXrxoYVr1IxqsBJ3SRE
+Accept: application/json
+
+### Hierarquia de Usuários (buscar acima)
+GET http://localhost:8082/usuarios/hierarquia/18?orientacao=ACIMA
+Authorization: Bearer {{token}}
+Accept: application/json

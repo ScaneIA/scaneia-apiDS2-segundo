@@ -1,8 +1,10 @@
 package org.example.scaneia_dsii.openapi;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
 import org.example.scaneia_dsii.dtos.PlanoDetalheRequestDTO;
@@ -13,12 +15,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RequestMapping("/planoDetalhe")
+@Tag(name = "Plano Detalhe", description = "Operações de Plano Detalhe")
 public interface PlanoDetalheOpenAPI {
-
-
     @Operation(summary = "Listar todos os planos detalhes")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Planos detalhes listados com sucesso")
+            @ApiResponse(responseCode = "200", description = "Planos detalhes listados com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso")
     })
     @GetMapping()
     ResponseEntity<List<PlanoDetalheResponseDTO>> listarPlanosDetalhes();
@@ -26,34 +29,54 @@ public interface PlanoDetalheOpenAPI {
     @Operation(summary = "Buscar plano detalhe por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Plano detalhe encontrado"),
-            @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado")
+            @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso")
     })
     @GetMapping("/{id}")
-    ResponseEntity<PlanoDetalheResponseDTO> listarPlanoDetalhePorId(@PathVariable Long id);
+    ResponseEntity<PlanoDetalheResponseDTO> listarPlanoDetalhePorId(
+            @Parameter(description = "ID do planoDetalhe a ser buscado")
+            @PathVariable Long id
+    );
 
     @Operation(summary = "Adicionar novo plano detalhe")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Plano detalhe adicionado com sucesso")
+            @ApiResponse(responseCode = "201", description = "Plano detalhe adicionado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "O corpo da requisição está inválido"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso")
     })
     @PostMapping()
-    ResponseEntity<PlanoDetalheResponseDTO> inserirPlanoDetalhe(@Valid @RequestBody PlanoDetalheRequestDTO request);
+    ResponseEntity<PlanoDetalheResponseDTO> inserirPlanoDetalhe(
+            @Valid @RequestBody PlanoDetalheRequestDTO request
+    );
 
     @Operation(summary = "Atualizar plano detalhe existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Plano detalhe atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado")
+            @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado"),
+            @ApiResponse(responseCode = "400", description = "O corpo da requisição está inválido"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso")
     })
-
     @PutMapping("/{id}")
-    ResponseEntity<PlanoDetalheResponseDTO> atualizarPlanoDetalheParcial(@PathVariable Long id,
-                                                           @RequestBody @Validated({OnPatch.class, Default.class}) PlanoDetalheRequestDTO request);
+    ResponseEntity<PlanoDetalheResponseDTO> atualizarPlanoDetalheParcial(
+            @Parameter(description = "ID do planoDetalhe a ser buscado")
+            @PathVariable Long id,
+            @RequestBody @Validated({OnPatch.class, Default.class}) PlanoDetalheRequestDTO request
+    );
 
     @Operation(summary = "Deletar plano detalhe")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Plano detalhe deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado")
+            @ApiResponse(responseCode = "404", description = "Plano detalhe não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para acessar este recurso")
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<String> deletarPlanoDetalhe(@PathVariable Long id);
+    ResponseEntity<String> deletarPlanoDetalhe(
+            @Parameter(description = "ID do planoDetalhe a ser buscado")
+            @PathVariable Long id
+    );
 
 }

@@ -125,9 +125,6 @@ public class UsuarioService {
         if (usuario == null) {
             throw new RuntimeException("Usuário não encontrado");
         }
-
-        System.out.println(new BCryptPasswordEncoder().encode("123456"));
-
         if (!passwordEncoder.matches(password, usuario.getSenha())) {
             System.out.println("Senha incorreta para o usuário: " + email);
             throw new RuntimeException("Senha inválida");

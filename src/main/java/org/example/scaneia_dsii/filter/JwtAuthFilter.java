@@ -1,5 +1,7 @@
 package org.example.scaneia_dsii.filter;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,11 +9,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.scaneia_dsii.config.JwtProperties;
 import org.example.scaneia_dsii.service.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import io.jsonwebtoken.Jwts;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Component
@@ -25,72 +29,53 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtProperties = jwtProperties;
     }
 
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request,
-//                                    HttpServletResponse response,
-//                                    FilterChain filterChain) throws ServletException, IOException {
-//
-//        String token = null;
-//        String authHeader = request.getHeader("Authorization");
-//
-//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-//            token = authHeader.substring(7);
-//        } else if (request.getParameter("token") != null) {
-//            token = request.getParameter("token");
-//        }
-//
-//        if (token != null && jwtService.validarAccessToken(token)) {
-//            String username = Jwts.parser()
-//                    .setSigningKey(jwtProperties.getAccessSecret())
-//                    .parseClaimsJws(token)
-//                    .getBody()
-//                    .getSubject();
-//
-//            UsernamePasswordAuthenticationToken auth =
-//                    new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-//            SecurityContextHolder.getContext().setAuthentication(auth);
-//        }
-//
-//        filterChain.doFilter(request, response);
-//    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String token = null;
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        } else if (request.getParameter("token") != null) {
-            token = request.getParameter("token");
-        }
+        String token = extractToken(request);
 
         if (token != null && jwtService.validarAccessToken(token)) {
-            var claims = Jwts.parser()
-                    .setSigningKey(jwtProperties.getAccessSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
+            try {
+                byte[] secret = jwtProperties.getAccessSecret().getBytes(StandardCharsets.UTF_8);
 
-            String subject = claims.getSubject(); // "username|ROLE"
-            String[] partes = subject.split("\\|");
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(secret)
+                        .build()
+                        .parseClaimsJws(token)
+                        .getBody();
 
-            String username = partes[0];
-            String role = partes.length > 1 ? partes[1] : "USER"; // fallback caso falte a role
+                // In your JwtService, you don’t set a subject — you set claims (username, usuario_tipo, etc.)
+                String username = claims.get("username", String.class);
+                String role = claims.get("usuario_tipo", String.class);
 
-            System.out.println("filterr");
-            System.out.println(username);
-            System.out.println(role);
-            var authority = new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role);
-            var auth = new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
+                if (username != null && role != null) {
+                    SimpleGrantedAuthority authority =
+                            new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                    UsernamePasswordAuthenticationToken auth =
+                            new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
+
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+
+            } catch (Exception e) {
+                // Log and continue without authentication
+                System.out.println("JWT validation failed: " + e.getMessage());
+                SecurityContextHolder.clearContext();
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 
-
+    private String extractToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return request.getParameter("token");
+    }
 }
-

@@ -11,16 +11,11 @@ import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
 import org.example.scaneia_dsii.repository.UsuarioTipoRepository;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UsuarioService {
@@ -31,21 +26,19 @@ public class UsuarioService {
     private final ObjectMapper objectMapper;
     @Getter
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private final JwtService jwtService;
 
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioTipoRepository usuarioTipoRepository, ObjectMapper objectMapper, JwtService jwtService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioTipoRepository usuarioTipoRepository, ObjectMapper objectMapper) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioTipoRepository = usuarioTipoRepository;
         this.objectMapper = objectMapper;
-        this.jwtService = jwtService;
     }
     public UsuarioResponseDTO inserirUsuario (UsuarioRequestDTO request) {
         if (usuarioRepository.existsByCpf(request.getCpf())) {
             throw new RuntimeException("CPF já cadastrado"); //Excessao personalizada
         }
         if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email já cadastrado"); //Excessao personalizada
+            throw new RuntimeException("Email já cadastrado"); //Excessao personalizada                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      org.checkerframework.checker.units.qual.C |q
         }
         Usuario novoUsuario = objectMapper.convertValue(request, Usuario.class);
         novoUsuario.setSenha(passwordEncoder.encode(request.getSenha()));
@@ -110,21 +103,21 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public UsuarioPerfilResponseDTO filtrarInformacoesUsuario(String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        String username = jwtService.extrairUsername(token);
-
+    public UsuarioPerfilResponseDTO filtrarInformacoesUsuario(String username) {
         if (!usuarioRepository.existsByEmail(username)) {
             throw new EntityNotFoundException("Usuário não encontrado");
         }
         return usuarioRepository.filtrarInformacoesUsuarios(username);
     }
 
+
     public void validarCredenciais(String email, String password) {
         Usuario usuario = usuarioRepository.findByEmail(email);
         if (usuario == null) {
             throw new RuntimeException("Usuário não encontrado");
         }
+
+
         if (!passwordEncoder.matches(password, usuario.getSenha())) {
             System.out.println("Senha incorreta para o usuário: " + email);
             throw new RuntimeException("Senha inválida");
@@ -142,7 +135,25 @@ public class UsuarioService {
         return usuarioTipo.getDescricao();
     }
 
+    public Map<String, Object> recuperarIds(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+        if (usuario == null) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
 
+        String username = usuario.getEmail();
+        Long idUsuario = usuario.getId();
+        Long idEstrutura = usuario.getIdEstrutura();
+        Long idTipoUsuario = usuario.getIdUsuarioTipo();
 
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id_usuario", idUsuario);
+        map.put("id_estrutura", idEstrutura);
+        map.put("id_tipo_usuario", idTipoUsuario);
+        map.put("username", username);
+
+        return map;
+    }
 }
 

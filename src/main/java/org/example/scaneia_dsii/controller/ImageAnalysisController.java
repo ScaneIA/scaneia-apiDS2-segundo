@@ -18,11 +18,9 @@ public class ImageAnalysisController implements ImageAnalysisOpenAPI {
     private ImageAnalysisService imageAnalysisService;
 
     @Override
-    public ResponseEntity<Map<String, Object>> analyzeImage(
-            @RequestPart("file") MultipartFile file
-    ) throws IOException {
-        System.out.println("Received file: " + file.getOriginalFilename() + ", size: " + file.getSize());
-        Map<String, Object> result = imageAnalysisService.analyzeImage(file);
-            return ResponseEntity.ok(result);
+    public ResponseEntity<Map<String, Object>> analyzeImage(Map<String, String> request) throws IOException {
+        String url = request.get("imageUrl");
+        Map<String, Object> result = imageAnalysisService.analyzeImage(url);
+        return ResponseEntity.ok(result);
     }
 }

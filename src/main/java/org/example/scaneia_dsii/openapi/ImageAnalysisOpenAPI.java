@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,12 +33,8 @@ public interface ImageAnalysisOpenAPI {
                     )
             }
     )
-    @PostMapping(value = "/analyze", consumes = "multipart/form-data")
+    @PostMapping(value = "/analyze", consumes = "application/json")
     ResponseEntity<Map<String, Object>> analyzeImage(
-            @Parameter(
-                    description = "Image file to be analyzed (e.g., JPG, PNG)",
-                    required = true
-            )
-            @RequestPart("file") MultipartFile file
+            @RequestBody Map<String, String> request
     ) throws IOException;
 }

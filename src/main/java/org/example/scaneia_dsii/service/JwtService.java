@@ -22,17 +22,26 @@ public class JwtService {
     private final StringRedisTemplate redisTemplate;
     private final UsuarioRepository usuarioRepository;
     private final UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository;
+    private final UsuarioService usuarioService;
 
-    public JwtService(JwtProperties jwtProperties, StringRedisTemplate redisTemplate, UsuarioRepository usuarioRepository, UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository) {
+    public JwtService(JwtProperties jwtProperties, StringRedisTemplate redisTemplate,UsuarioService usuarioService, UsuarioRepository usuarioRepository, UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository) {
         this.jwtProperties = jwtProperties;
         this.redisTemplate = redisTemplate;
         this.usuarioRepository = usuarioRepository;
         this.usuarioAcessoLogDauRepository = usuarioAcessoLogDauRepository;
+        this.usuarioService = usuarioService;
     }
 
     // Gera Access Token
-    public String gerarAccessToken(String username, String usuarioTipo) {
+    public String gerarAccessToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        String usuarioTipo = usuarioService.recuperarTipoUsuario(username);
+        Map<String, Object> map = usuarioService.recuperarIds(username);
+        claims.put("username", username);
+        claims.putAll(map);
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(username + "|" + usuarioTipo)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))
@@ -41,9 +50,12 @@ public class JwtService {
     }
 
     // Gera Refresh Token e salva no Redis
-    public String gerarRefreshToken(String username, String usuarioTipo) {
+    public String gerarRefreshToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", username);
+        String usuarioTipo = usuarioService.recuperarTipoUsuario(username);
+        Map<String, Object> map = usuarioService.recuperarIds(username);
+        claims.putAll(map);
+
 
         String token = Jwts.builder()
                 .setClaims(claims)

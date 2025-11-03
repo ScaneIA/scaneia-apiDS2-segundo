@@ -9,6 +9,7 @@ import org.example.scaneia_dsii.service.JwtService;
 import org.example.scaneia_dsii.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.example.scaneia_dsii.model.UsuarioHierarquiaProjection;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,15 @@ public class UsuarioController implements UsuarioOpenAPI {
     public ResponseEntity<Void> deletar(@PathVariable Long id){
         usuarioService.deletarUsuario(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/hierarquia/{id}")
+    public ResponseEntity<List<UsuarioHierarquiaProjection>> listarHierarquia(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "ABAIXO") String orientacao) {
+
+        List<UsuarioHierarquiaProjection> resultado = usuarioService.listarHierarquia(id, orientacao);
+        return ResponseEntity.ok(resultado);
     }
 
     @Override

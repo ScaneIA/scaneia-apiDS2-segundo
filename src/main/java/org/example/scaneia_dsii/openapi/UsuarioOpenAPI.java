@@ -78,14 +78,14 @@ public interface UsuarioOpenAPI {
             @PathVariable Long id
     );
 
-    @Operation(summary = "Filtrar informações do usuário")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Informações obtidas com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
-    })
-    @GetMapping("/filtro")
-    ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(
-            @RequestHeader("Authorization") String authHeader
-    );
+//    @Operation(summary = "Filtrar informações do usuário")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Informações obtidas com sucesso"),
+//            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+//            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+//    })
+//    @GetMapping("/filtro")
+//    ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(
+//            @RequestHeader("Authorization") String authHeader
+//    );
 }

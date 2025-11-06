@@ -1,12 +1,15 @@
 package org.example.scaneia_dsii.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.example.scaneia_dsii.dtos.CadastroRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioPerfilResponseDTO;
 import org.example.scaneia_dsii.openapi.UsuarioOpenAPI;
 import org.example.scaneia_dsii.dtos.UsuarioRequestDTO;
 import org.example.scaneia_dsii.dtos.UsuarioResponseDTO;
 import org.example.scaneia_dsii.service.JwtService;
 import org.example.scaneia_dsii.service.UsuarioService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.scaneia_dsii.model.UsuarioHierarquiaProjection;
@@ -74,5 +77,23 @@ public class UsuarioController implements UsuarioOpenAPI {
         return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(username));
     }
 
+    @PostMapping("/cadastro")
+    public ResponseEntity<Void> salvarNovaSenha(@RequestBody CadastroRequestDTO request) {
+        try {
+            boolean sucesso = jwtService.salvarNovaSenha(request);
+
+            if (sucesso) {
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }

@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .requestMatchers("/planoDetalhe/**").hasRole("RH")
                 .requestMatchers("/transacao/**").hasRole("RH")
                 .requestMatchers("/transacaoItem/**").hasRole("RH")
-                .requestMatchers("/vision/analyze").hasRole("COLABORADOR")
+                .requestMatchers("/vision/analyze").permitAll()
                 .anyRequest().authenticated()
             );
 

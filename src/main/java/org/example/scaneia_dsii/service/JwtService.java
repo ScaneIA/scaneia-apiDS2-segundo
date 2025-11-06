@@ -1,12 +1,15 @@
 package org.example.scaneia_dsii.service;
 
 import io.jsonwebtoken.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.example.scaneia_dsii.config.JwtProperties;
+import org.example.scaneia_dsii.dtos.CadastroRequestDTO;
 import org.example.scaneia_dsii.model.Usuario;
 import org.example.scaneia_dsii.model.UsuarioAcessoLogDau;
 import org.example.scaneia_dsii.repository.UsuarioAcessoLogDauRepository;
 import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -33,6 +36,7 @@ public class JwtService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioAcessoLogDauRepository usuarioAcessoLogDauRepository;
     private final JwtProperties jwtProperties;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public JwtService(
             UsuarioService usuarioService,
@@ -165,5 +169,21 @@ public class JwtService {
         usuarioAcessoLogDauRepository.save(log);
 
         redisTemplate.delete(token);
+    }
+
+    public boolean salvarNovaSenha(CadastroRequestDTO dto) {
+        Usuario usuario = usuarioRepository.findByEmail(dto.getEmail());
+        System.out.println(usuario);
+        if (usuario == null) {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+        System.out.println(usuario.getSenha());
+        if (!Objects.equals(usuario.getSenha(), "")) {
+            return false;
+        }
+        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        System.out.println(passwordEncoder.encode(dto.getSenha()));
+        usuarioRepository.save(usuario);
+        return true;
     }
 }

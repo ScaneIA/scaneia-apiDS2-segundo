@@ -60,3 +60,9 @@ Accept: application/json
 GET http://localhost:8082/usuarios/hierarquia/18?orientacao=ACIMA
 Authorization: Bearer {{token}}
 Accept: application/json
+
+### Get Perfil
+GET http://localhost:8082/usuarios/perfil
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZF91c3VhcmlvIjoyOCwiaWRfZXN0cnV0dXJhIjoxLCJpZF90aXBvX3VzdWFyaW8iOjEsInVzZXJuYW1lIjoiaGVybWlvbmUuZ3JhbmdlckBob3RtYWlsLmNvbSIsInN1YiI6Imhlcm1pb25lLmdyYW5nZXJAaG90bWFpbC5jb218RElSRVRPUiIsImlhdCI6MTc2MjQ0Njg0MCwiZXhwIjoxNzYyNDQ3NzQwfQ.AxG8nOAUe6IJbSpOgfGxecoo-mMK5IGKYWV2qsrmKfA
+Accept: application/json
+

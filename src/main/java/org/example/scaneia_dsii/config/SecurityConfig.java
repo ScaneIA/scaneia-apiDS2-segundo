@@ -34,6 +34,8 @@ public class SecurityConfig {
 
                 //Qualquer usuário pode fazer com autenticação
                 .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
+                .requestMatchers(HttpMethod.GET, "/usuarios/perfil").permitAll()
+
 
                 //Somente visualização dos usuários e estruturas para administradores e diretores
                 .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("ADMIN", "DIRETOR")

@@ -4,6 +4,7 @@ import org.example.scaneia_dsii.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,9 +35,13 @@ public class SecurityConfig {
                 // Public routes
                 .requestMatchers("/auth/**", "/ping", "/usuarios/hierarquia/**").permitAll()
 
+                //Temporário
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
 
                 //Qualquer usuário pode fazer com autenticação
+                .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
+                .requestMatchers(HttpMethod.GET, "/usuarios/perfil").permitAll()
+
                 .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("COLABORADOR", "CHEFE_DE_AREA", "DIRETOR", "RH")
 
                 //Somente visualização dos usuários e estruturas para administradores e diretores

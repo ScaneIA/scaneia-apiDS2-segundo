@@ -59,15 +59,18 @@ public class UsuarioController implements UsuarioOpenAPI {
         return ResponseEntity.ok(resultado);
     }
 
-    @Override
-    public ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader) {
-        return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(authHeader));
-    }
+//    @Override
+//    public ResponseEntity<UsuarioPerfilResponseDTO> filtrarInformacoesUsuario(@RequestHeader("Authorization") String authHeader) {
+//        return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(authHeader));
+//    }
 
-    @PostMapping("/perfil")
+    @GetMapping("/perfil")
     public ResponseEntity<UsuarioPerfilResponseDTO> getPerfil(@RequestHeader("Authorization") String authHeader) {
+        System.out.println("Rota Perfil: ");
         String token = authHeader.replace("Bearer ", "");
-        String username = jwtService.extrairUsername(token); // chama AQUI
+        System.out.println(token);
+        String username = jwtService.extrairUsername(token);
+        System.out.println(username);// chama AQUI
         return ResponseEntity.ok(usuarioService.filtrarInformacoesUsuario(username));
     }
 

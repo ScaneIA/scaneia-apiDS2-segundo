@@ -56,7 +56,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    // 🔐 Gera Access Token
+    // Gera Access Token
     public String gerarAccessToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         String usuarioTipo = usuarioService.recuperarTipoUsuario(username);
@@ -73,7 +73,7 @@ public class JwtService {
                 .compact();
     }
 
-    // 🔄 Gera Refresh Token e salva no Redis
+    // Gera Refresh Token e salva no Redis
     public String gerarRefreshToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         String usuarioTipo = usuarioService.recuperarTipoUsuario(username);
@@ -93,7 +93,6 @@ public class JwtService {
         return token;
     }
 
-    // ✅ Validação do Access Token
     public boolean validarAccessToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -102,12 +101,10 @@ public class JwtService {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
-            System.out.println("Falha na validação do token: " + e.getMessage());
             return false;
         }
     }
 
-    // 📩 Extrai o username do Access Token
     public String extrairUsername(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
@@ -125,6 +122,7 @@ public class JwtService {
     }
 
     // 🔍 Extrai tipo de usuário do Refresh Token
+
     public String extrairUsuarioTipoRefreshToken(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
@@ -141,7 +139,6 @@ public class JwtService {
         }
     }
 
-    // 🧾 Verifica se o Refresh Token ainda é válido (está no Redis)
     public boolean validarRefreshToken(String token) {
         return redisTemplate.hasKey(token);
     }
@@ -150,7 +147,6 @@ public class JwtService {
         return redisTemplate.opsForValue().get(token);
     }
 
-    // 🚫 Revoga o Refresh Token (logout)
     public void revogarRefreshToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getRefreshKey())

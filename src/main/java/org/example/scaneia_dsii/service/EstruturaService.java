@@ -7,7 +7,6 @@ import org.example.scaneia_dsii.dtos.EstruturaRequestDTO;
 import org.example.scaneia_dsii.dtos.EstruturaResponseDTO;
 import org.example.scaneia_dsii.model.Estrutura;
 import org.example.scaneia_dsii.repository.EstruturaRepository;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 
@@ -68,14 +67,14 @@ public class EstruturaService {
 
     public EstruturaResponseDTO listarEstruturaPorId(Long id) {
         Estrutura estrutura = estruturaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Transação não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Estrutura não encontrada"));
         return objectMapper.convertValue(estrutura, EstruturaResponseDTO.class);
     }
 
     @Transactional
     public EstruturaResponseDTO atualizarEstruturaParcial(Long id, EstruturaRequestDTO request) {
         Estrutura estrutura = estruturaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Transação Item não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Estrutura não encontrada"));
 
         if (request.getDescricao() != null) {
             estrutura.setDescricao(request.getDescricao());
@@ -103,7 +102,7 @@ public class EstruturaService {
     @Transactional
     public void deletarEstrutura(Long id) {
         if (!estruturaRepository.existsById(id)) {
-            throw new EmptyResultDataAccessException(1);
+            throw new EntityNotFoundException("Estrutura não encontrada");
         }
         estruturaRepository.deleteById(id);
     }

@@ -1,7 +1,9 @@
 package org.example.scaneia_dsii.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.scaneia_dsii.dtos.AuthRequestDTO;
 import org.example.scaneia_dsii.dtos.AuthResponseDTO;
+import org.example.scaneia_dsii.dtos.CadastroRequestDTO;
 import org.example.scaneia_dsii.dtos.RefreshTokenRequestDTO;
 import org.example.scaneia_dsii.model.Usuario;
 import org.example.scaneia_dsii.model.UsuarioAcessoLogDau;
@@ -9,6 +11,7 @@ import org.example.scaneia_dsii.repository.UsuarioAcessoLogDauRepository;
 import org.example.scaneia_dsii.repository.UsuarioRepository;
 import org.example.scaneia_dsii.service.JwtService;
 import org.example.scaneia_dsii.service.UsuarioService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,5 +80,23 @@ public class AuthController {
     public ResponseEntity<String> filtrarRoleDoUsuario(@RequestBody RefreshTokenRequestDTO dto) {
         String role = jwtService.extrairUsuarioTipoRefreshToken(dto.getRefreshToken());
         return ResponseEntity.ok(role);
+    }
+    @PostMapping("/cadastro")
+    public ResponseEntity<Void> salvarNovaSenha(@RequestBody CadastroRequestDTO request) {
+        try {
+            boolean sucesso = jwtService.salvarNovaSenha(request);
+
+            if (sucesso) {
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

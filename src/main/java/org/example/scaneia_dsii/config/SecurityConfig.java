@@ -10,6 +10,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -22,12 +27,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests()
-                //Qualquer usuário pode fazer sem autenticação
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/ping").permitAll()
-                .requestMatchers("/usuarios/hierarquia/**").permitAll()
+        http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                // Public routes
+                .requestMatchers("/auth/**", "/ping", "/usuarios/hierarquia/**").permitAll()
 
                 //Temporário
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
@@ -36,12 +42,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("OPERARIO", "ADMIN", "DIRETOR", "RH")
                 .requestMatchers(HttpMethod.GET, "/usuarios/perfil").permitAll()
 
+                .requestMatchers(HttpMethod.GET, "/usuarios/filtro").hasAnyRole("COLABORADOR", "CHEFE_DE_AREA", "DIRETOR", "RH")
 
                 //Somente visualização dos usuários e estruturas para administradores e diretores
-                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("ADMIN", "DIRETOR")
-                .requestMatchers(HttpMethod.GET, "/usuarioTipo**").hasAnyRole("ADMIN", "DIRETOR")
-                .requestMatchers(HttpMethod.GET, "/estruturaTipo/**").hasAnyRole("ADMIN", "DIRETOR")
-                .requestMatchers(HttpMethod.GET, "/estrutura/**").hasAnyRole("ADMIN", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/usuarioTipo**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/estruturaTipo/**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
+                .requestMatchers(HttpMethod.GET, "/estrutura/**").hasAnyRole("CHEFE_DE_AREA", "DIRETOR")
 
                 //Todos os acessos as rotas para os analistas de RH
                 .requestMatchers("/usuarios/**").hasRole("RH")
@@ -52,16 +59,30 @@ public class SecurityConfig {
                 .requestMatchers("/planoDetalhe/**").hasRole("RH")
                 .requestMatchers("/transacao/**").hasRole("RH")
                 .requestMatchers("/transacaoItem/**").hasRole("RH")
-
-                .requestMatchers("/vision/analyze").hasAnyRole("COLABORADOR")
-
-
+                .requestMatchers("/vision/analyze").hasRole("COLABORADOR")
                 .anyRequest().authenticated()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            );
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Replace with your frontend URLs
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://scaneia-admin.web.app"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
